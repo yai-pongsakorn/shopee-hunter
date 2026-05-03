@@ -321,21 +321,59 @@ pre.script-out{color:#ddd;font-family:var(--font);font-size:13px;line-height:1.8
   </div>
   <!-- TTS Section -->
   <div class="card" style="margin-top:14px" id="af-tts-section">
-    <div class="card-title">🎙️ TTS พากย์เสียง (ElevenLabs AI)</div>
-    <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
-      <select class="sel" id="tts-voice" style="min-width:180px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="card-title" style="margin:0">🎙️ TTS พากย์เสียง</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-primary btn-sm tts-provider-btn" data-p="google" onclick="setTTSProvider(this)">🔵 Google</button>
+        <button class="btn btn-ghost btn-sm tts-provider-btn" data-p="elevenlabs" onclick="setTTSProvider(this)">🟣 ElevenLabs</button>
+      </div>
+    </div>
+
+    <!-- Google TTS controls -->
+    <div id="tts-google-controls" style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <select class="sel" id="tts-google-voice" style="min-width:220px">
+        <optgroup label="🇹🇭 ภาษาไทย (Neural2)">
+          <option value="th-TH-Neural2-C">th-TH-Neural2-C (หญิง ★★★★★)</option>
+          <option value="th-TH-Standard-A">th-TH-Standard-A (หญิง)</option>
+        </optgroup>
+        <optgroup label="🇺🇸 English (Neural2)">
+          <option value="en-US-Neural2-F">en-US-Neural2-F (Female)</option>
+          <option value="en-US-Neural2-D">en-US-Neural2-D (Male)</option>
+          <option value="en-US-Neural2-A">en-US-Neural2-A (Male)</option>
+        </optgroup>
+      </select>
+      <select class="sel" id="tts-google-speed">
+        <option value="0.85">ช้า</option>
+        <option value="1.0" selected>ปกติ</option>
+        <option value="1.15">เร็ว</option>
+        <option value="1.3">เร็วมาก</option>
+      </select>
+      <select class="sel" id="tts-google-pitch">
+        <option value="-2">เสียงต่ำ</option>
+        <option value="0" selected>ปกติ</option>
+        <option value="2">เสียงสูง</option>
+        <option value="4">เสียงสูงมาก</option>
+      </select>
+    </div>
+
+    <!-- ElevenLabs controls -->
+    <div id="tts-elevenlabs-controls" style="display:none;gap:9px;align-items:center;flex-wrap:wrap">
+      <select class="sel" id="tts-voice" style="min-width:200px">
         <option value="EXAVITQu4vr4xnSDxMaL">Rachel (EN - Female)</option>
         <option value="pNInz6obpgDQGcFmaJgB">Adam (EN - Male)</option>
         <option value="jBpfuIE2acCO8z3wKNLl">Freya (EN - Female)</option>
         <option value="flq6f7yk4E4fJM5XTYuZ">Michael (EN - Male)</option>
         <option value="custom">— ใส่ Voice ID เอง —</option>
       </select>
-      <input class="inp" id="tts-custom-voice" placeholder="Voice ID (ถ้าเลือก custom)" style="width:180px;display:none"/>
+      <input class="inp" id="tts-custom-voice" placeholder="Voice ID" style="width:160px;display:none"/>
       <select class="sel" id="tts-model">
         <option value="eleven_multilingual_v2">Multilingual v2 (รองรับไทย)</option>
         <option value="eleven_turbo_v2_5">Turbo v2.5 (เร็ว)</option>
-        <option value="eleven_monolingual_v1">Monolingual v1 (EN)</option>
       </select>
+    </div>
+
+    <!-- Common controls -->
+    <div style="display:flex;gap:7px;align-items:center;margin-top:9px">
       <button class="btn btn-purple btn-sm" onclick="ttsSpeak()">🔊 ฟัง Caption</button>
       <button class="btn btn-ghost btn-sm" id="btn-tts-stop" onclick="ttsStop()" style="display:none">⏹ หยุด</button>
       <span id="tts-status" style="color:var(--muted);font-size:11px"></span>
@@ -479,17 +517,41 @@ pre.script-out{color:#ddd;font-family:var(--font);font-size:13px;line-height:1.8
     </div>
 
     <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="card" style="border-color:#fd79a822">
-        <div class="card-title" style="color:#fd79a8">🎙️ ElevenLabs TTS (AI Voice)</div>
-        <div class="setup-row">
-          <div class="setup-status" id="st-elevenlabs"></div>
-          <span class="setup-label">ElevenLabs API Key</span>
-          <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" class="btn btn-ghost btn-sm">สมัครฟรี ↗</a>
+      <div class="card" style="border-color:#4285f422">
+        <div class="card-title" style="color:#4285f4">🎙️ TTS Engine (พากย์เสียง)</div>
+
+        <!-- Provider toggle -->
+        <div style="display:flex;gap:7px;margin-bottom:12px">
+          <button class="btn btn-primary btn-sm tts-provider-btn" data-p="google" onclick="setTTSProvider(this)" style="flex:1;justify-content:center">🔵 Google TTS</button>
+          <button class="btn btn-ghost btn-sm tts-provider-btn" data-p="elevenlabs" onclick="setTTSProvider(this)" style="flex:1;justify-content:center">🟣 ElevenLabs</button>
         </div>
-        <input class="inp" id="key-elevenlabs" placeholder="sk_..." oninput="saveKeys()" style="font-family:monospace;font-size:12px;margin-bottom:10px"/>
-        <div style="background:#0a0c18;border-radius:9px;padding:10px 12px;border:1px solid #fd79a822">
-          <p style="color:var(--muted);font-size:11px;line-height:1.6">ElevenLabs ให้ทดลองฟรี 10,000 characters/เดือน รองรับเสียงไทยและหลายภาษา คุณภาพเสียงระดับ AI</p>
-          <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="ttsTest()">🔊 ทดสอบเสียง</button>
+
+        <!-- Google TTS -->
+        <div id="setup-google-tts">
+          <div class="setup-row">
+            <div class="setup-status" id="st-googletts"></div>
+            <span class="setup-label">Google Cloud API Key</span>
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="btn btn-ghost btn-sm">สมัคร ↗</a>
+          </div>
+          <input class="inp" id="key-googletts" placeholder="AIza..." oninput="saveKeys()" style="font-family:monospace;font-size:12px;margin-bottom:8px"/>
+          <div style="background:#0a0c18;border-radius:9px;padding:10px 12px;border:1px solid #4285f422">
+            <p style="color:var(--muted);font-size:11px;line-height:1.6">Google Cloud TTS มีเสียงไทย Neural2 คุณภาพสูง — ฟรี 1 ล้าน characters แรก/เดือน เปิดใช้ "Cloud Text-to-Speech API" ใน console ก่อน</p>
+            <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="ttsTest()">🔊 ทดสอบเสียง</button>
+          </div>
+        </div>
+
+        <!-- ElevenLabs -->
+        <div id="setup-elevenlabs-tts" style="display:none">
+          <div class="setup-row">
+            <div class="setup-status" id="st-elevenlabs"></div>
+            <span class="setup-label">ElevenLabs API Key</span>
+            <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" class="btn btn-ghost btn-sm">สมัครฟรี ↗</a>
+          </div>
+          <input class="inp" id="key-elevenlabs" placeholder="sk_..." oninput="saveKeys()" style="font-family:monospace;font-size:12px;margin-bottom:8px"/>
+          <div style="background:#0a0c18;border-radius:9px;padding:10px 12px;border:1px solid #fd79a822">
+            <p style="color:var(--muted);font-size:11px;line-height:1.6">ElevenLabs ฟรี 10,000 chars/เดือน รองรับเสียงไทย (Multilingual v2)</p>
+            <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="ttsTest()">🔊 ทดสอบเสียง</button>
+          </div>
         </div>
       </div>
 
@@ -503,6 +565,36 @@ pre.script-out{color:#ddd;font-family:var(--font);font-size:13px;line-height:1.8
         <div style="display:flex;flex-direction:column;gap:7px" id="setup-guide"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ══════════════ AUTO-GEN MODAL ══════════════ -->
+<div class="modal-bg" id="autogen-modal" onclick="closeModal('autogen-modal')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:720px;padding:0;overflow:hidden">
+
+    <!-- Header -->
+    <div style="padding:18px 22px 14px;background:linear-gradient(135deg,#ff6b3515,#a29bfe10);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:16px;font-weight:800;background:linear-gradient(135deg,var(--orange),var(--red),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="ag-title">⚡ Auto Generate</div>
+        <div style="color:var(--muted);font-size:11px;margin-top:2px" id="ag-product-name">—</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('autogen-modal')">✕</button>
+    </div>
+
+    <!-- Progress steps -->
+    <div style="padding:14px 22px;border-bottom:1px solid var(--border);background:#ffffff03">
+      <div style="display:flex;gap:0;align-items:center" id="ag-steps">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:18px 22px;max-height:62vh;overflow-y:auto" id="ag-body">
+      <div style="text-align:center;padding:40px;color:var(--muted)">เตรียมพร้อม...</div>
+    </div>
+
+    <!-- Footer actions -->
+    <div style="padding:12px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap" id="ag-footer"></div>
   </div>
 </div>
 
@@ -529,7 +621,7 @@ pre.script-out{color:#ddd;font-family:var(--font);font-size:13px;line-height:1.8
 // ════════════════════════════════════════════════
 const S = {
   products: [],
-  keys: { gemini:'', groq:'', pexels:'', shopee:'myshop_af2025', elevenlabs:'' },
+  keys: { gemini:'', groq:'', pexels:'', shopee:'myshop_af2025', elevenlabs:'', googletts:'' },
   engine: 'groq',
   clipTemplate: 'hook3',
   clipScene: 0,
@@ -610,12 +702,40 @@ function parseJSON(raw) {
 }
 
 // ════════════════════════════════════════════════
-// TTS (ElevenLabs API)
+// TTS — Google Cloud TTS + ElevenLabs (เลือกได้)
 // ════════════════════════════════════════════════
 let currentAudio = null;
+let S_ttsProvider = 'google'; // 'google' | 'elevenlabs'
+
+function setTTSProvider(btn) {
+  S_ttsProvider = btn.dataset.p;
+  localStorage.setItem('sth_tts_provider', S_ttsProvider);
+  // sync all provider toggle buttons (affiliate + setup)
+  document.querySelectorAll('.tts-provider-btn').forEach(b => {
+    b.className = b.dataset.p === S_ttsProvider
+      ? 'btn btn-primary btn-sm tts-provider-btn'
+      : 'btn btn-ghost btn-sm tts-provider-btn';
+  });
+  // show/hide controls in affiliate panel
+  const gc = document.getElementById('tts-google-controls');
+  const ec = document.getElementById('tts-elevenlabs-controls');
+  if (gc) gc.style.display = S_ttsProvider === 'google' ? 'flex' : 'none';
+  if (ec) ec.style.display = S_ttsProvider === 'elevenlabs' ? 'flex' : 'none';
+  // show/hide key sections in setup panel
+  const sg = document.getElementById('setup-google-tts');
+  const se = document.getElementById('setup-elevenlabs-tts');
+  if (sg) sg.style.display = S_ttsProvider === 'google' ? 'block' : 'none';
+  if (se) se.style.display = S_ttsProvider === 'elevenlabs' ? 'block' : 'none';
+}
 
 function initTTS() {
-  // Setup custom voice ID toggle
+  // restore saved provider
+  const saved = localStorage.getItem('sth_tts_provider');
+  if (saved) S_ttsProvider = saved;
+  // apply to all toggle buttons
+  const fakeBtn = { dataset: { p: S_ttsProvider }, className: '' };
+  setTTSProvider({ dataset: { p: S_ttsProvider } });
+  // ElevenLabs custom voice toggle
   const voiceSel = document.getElementById('tts-voice');
   const customInp = document.getElementById('tts-custom-voice');
   if (voiceSel && customInp) {
@@ -623,69 +743,95 @@ function initTTS() {
       customInp.style.display = voiceSel.value === 'custom' ? 'inline-block' : 'none';
     };
   }
-  updateElevenLabsStatus();
+  updateTTSStatus();
 }
 
-function updateElevenLabsStatus() {
-  const el = document.getElementById('st-elevenlabs');
-  if (el) el.className = 'setup-status ' + (S.keys.elevenlabs ? 'status-ok' : 'status-no');
+function updateTTSStatus() {
+  const elG = document.getElementById('st-googletts');
+  const elE = document.getElementById('st-elevenlabs');
+  if (elG) elG.className = 'setup-status ' + (S.keys.googletts ? 'status-ok' : 'status-no');
+  if (elE) elE.className = 'setup-status ' + (S.keys.elevenlabs ? 'status-ok' : 'status-no');
 }
-
-function getTTSVoiceId() {
-  const sel = document.getElementById('tts-voice');
-  if (!sel) return 'EXAVITQu4vr4xnSDxMaL';
-  if (sel.value === 'custom') {
-    return document.getElementById('tts-custom-voice')?.value.trim() || 'EXAVITQu4vr4xnSDxMaL';
-  }
-  return sel.value;
-}
-
-function getTTSModel() {
-  return document.getElementById('tts-model')?.value || 'eleven_multilingual_v2';
-}
+// alias used by saveKeys/renderSetup
+function updateElevenLabsStatus() { updateTTSStatus(); }
 
 function setTTSStatus(msg, color='var(--muted)') {
   const el = document.getElementById('tts-status');
   if (el) { el.textContent = msg; el.style.color = color; }
 }
 
+// ── Google Cloud TTS ──────────────────────────
+async function ttsGoogle(text) {
+  if (!S.keys.googletts) {
+    setTTSStatus('❌ ยังไม่ได้ใส่ Google Cloud API Key (ไปที่ ⚙️ ตั้งค่า)', 'var(--red)');
+    return false;
+  }
+  const voiceName = document.getElementById('tts-google-voice')?.value || 'th-TH-Neural2-C';
+  const langCode  = voiceName.startsWith('th') ? 'th-TH' : 'en-US';
+  const speed = parseFloat(document.getElementById('tts-google-speed')?.value || 1.0);
+  const pitch = parseFloat(document.getElementById('tts-google-pitch')?.value || 0);
+
+  const body = {
+    input: { text },
+    voice: { languageCode: langCode, name: voiceName },
+    audioConfig: { audioEncoding: 'MP3', speakingRate: speed, pitch }
+  };
+
+  const res = await fetch(
+    `https://texttospeech.googleapis.com/v1/text:synthesize?key=${S.keys.googletts}`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message || `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  // Google returns base64 MP3
+  const binary = atob(data.audioContent);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  const blob = new Blob([bytes], { type: 'audio/mpeg' });
+  return URL.createObjectURL(blob);
+}
+
+// ── ElevenLabs TTS ────────────────────────────
+async function ttsElevenLabs(text) {
+  if (!S.keys.elevenlabs) {
+    setTTSStatus('❌ ยังไม่ได้ใส่ ElevenLabs API Key (ไปที่ ⚙️ ตั้งค่า)', 'var(--red)');
+    return false;
+  }
+  const sel = document.getElementById('tts-voice');
+  const voiceId = (sel?.value === 'custom')
+    ? (document.getElementById('tts-custom-voice')?.value.trim() || 'EXAVITQu4vr4xnSDxMaL')
+    : (sel?.value || 'EXAVITQu4vr4xnSDxMaL');
+  const model = document.getElementById('tts-model')?.value || 'eleven_multilingual_v2';
+
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    method: 'POST',
+    headers: { 'xi-api-key': S.keys.elevenlabs, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, model_id: model, voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.detail?.message || `HTTP ${res.status}`);
+  }
+  const blob = await res.blob();
+  return URL.createObjectURL(blob);
+}
+
+// ── Main speak ────────────────────────────────
 async function ttsSpeak(text) {
   if (!text) text = document.getElementById('af-caption-text')?.value || '';
   if (!text) { setTTSStatus('ไม่มีข้อความ', 'var(--red)'); return; }
-
-  if (!S.keys.elevenlabs) {
-    setTTSStatus('❌ ยังไม่ได้ใส่ ElevenLabs API Key (ไปที่ ⚙️ ตั้งค่า)', 'var(--red)');
-    return;
-  }
-
   ttsStop();
   setTTSStatus('⏳ กำลังสร้างเสียง...', 'var(--yellow)');
   const stopBtn = document.getElementById('btn-tts-stop');
   if (stopBtn) stopBtn.style.display = 'inline-flex';
-
   try {
-    const voiceId = getTTSVoiceId();
-    const model = getTTSModel();
-    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': S.keys.elevenlabs,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text: text,
-        model_id: model,
-        voice_settings: { stability: 0.5, similarity_boost: 0.75 }
-      })
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err?.detail?.message || `HTTP ${res.status}`);
-    }
-
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
+    const url = S_ttsProvider === 'google'
+      ? await ttsGoogle(text)
+      : await ttsElevenLabs(text);
+    if (!url) { if (stopBtn) stopBtn.style.display = 'none'; return; }
     currentAudio = new Audio(url);
     currentAudio.onended = () => {
       setTTSStatus('✅ เล่นจบแล้ว', 'var(--green)');
@@ -705,21 +851,13 @@ async function ttsSpeak(text) {
 }
 
 function ttsStop() {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.src = '';
-    currentAudio = null;
-  }
+  if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
   setTTSStatus('', 'var(--muted)');
   const stopBtn = document.getElementById('btn-tts-stop');
   if (stopBtn) stopBtn.style.display = 'none';
 }
-
-// ttsPause alias for backward compat
 function ttsPause() { ttsStop(); }
-
-function ttsTest() { ttsSpeak('สวัสดีครับ ทดสอบระบบพากย์เสียง ElevenLabs AI'); }
-
+function ttsTest() { ttsSpeak('สวัสดีครับ ทดสอบระบบพากย์เสียง AI คุณภาพสูง'); }
 function ttsScript() {
   const text = document.getElementById('clip-script-display')?.innerText || '';
   ttsSpeak(text);
@@ -896,8 +1034,9 @@ function renderProductGrid(products) {
         </div>
         <div class="pcard-tags">${p.hashtags.map(h=>`<span class="tag">${h}</span>`).join('')}</div>
         <div class="pcard-actions">
-          <button class="btn btn-primary" onclick="openScriptModal(${p.id})">🎬 Script</button>
-          <button class="btn" style="background:var(--red);color:#fff;flex:1;justify-content:center;font-size:11px" onclick="copyAffLink(${p.id},this)">🛒 Affiliate</button>
+          <button class="btn btn-primary" style="background:linear-gradient(135deg,var(--orange),var(--red));flex:2;justify-content:center;font-size:12px" onclick="openAutoGen(${p.id})">⚡ Auto Gen</button>
+          <button class="btn btn-ghost btn-sm" onclick="openScriptModal(${p.id})" style="flex:1;justify-content:center;font-size:10px">🎬</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;font-size:10px;color:var(--red);border-color:#ff475733" onclick="copyAffLink(${p.id},this)">🛒</button>
         </div>
       </div>
     </div>`;
@@ -1316,6 +1455,206 @@ function copyText(encoded, btn) {
 }
 
 // ════════════════════════════════════════════════
+// AUTO GEN — One-Click Full Pipeline
+// ════════════════════════════════════════════════
+const AG_STEPS = [
+  { id:'script',   icon:'🎬', label:'Script'    },
+  { id:'story',    icon:'📋', label:'Storyboard' },
+  { id:'caption',  icon:'✏️',  label:'Caption'   },
+  { id:'link',     icon:'🔗', label:'Aff Link'  },
+  { id:'export',   icon:'📦', label:'โพสต์'     },
+];
+
+let agProductId = null;
+let agResult = {};
+
+function renderAgSteps(currentIdx) {
+  const allDone = currentIdx >= AG_STEPS.length;
+  document.getElementById('ag-steps').innerHTML = AG_STEPS.map((s, i) => {
+    const done    = allDone || i < currentIdx;
+    const active  = !allDone && i === currentIdx;
+    const color   = done ? 'var(--green)' : active ? 'var(--orange)' : 'var(--muted)';
+    const bg      = done ? '#2ed57322' : active ? '#ff6b3522' : '#ffffff08';
+    const border  = done ? '#2ed57344' : active ? '#ff6b3544' : 'var(--border)';
+    return `
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative">
+        <div style="width:32px;height:32px;border-radius:50%;background:${bg};border:2px solid ${border};display:flex;align-items:center;justify-content:center;font-size:${done?'14':'12'}px;transition:all .3s">
+          ${done ? '✓' : active ? `<div style="width:10px;height:10px;border:2px solid var(--orange);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></div>` : s.icon}
+        </div>
+        <div style="font-size:9px;color:${color};font-weight:${active?700:500};white-space:nowrap">${s.label}</div>
+        ${i < AG_STEPS.length-1 ? `<div style="position:absolute;top:15px;left:calc(50% + 18px);right:calc(-50% + 18px);height:2px;background:${done?'var(--green)':'var(--border)'};transition:background .5s"></div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function agSetBody(html) {
+  document.getElementById('ag-body').innerHTML = html;
+}
+
+async function openAutoGen(productId) {
+  agProductId = productId;
+  agResult = {};
+  const p = S.products.find(x => x.id === productId); if (!p) return;
+
+  document.getElementById('ag-title').innerHTML = '⚡ Auto Generate';
+  document.getElementById('ag-product-name').textContent = p.badge + ' ' + p.name;
+  document.getElementById('ag-footer').innerHTML = '';
+  document.getElementById('autogen-modal').classList.add('open');
+
+  renderAgSteps(0);
+  agSetBody('<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">🎬 AI กำลังเขียน Script...</div></div>');
+
+  // ── Step 0: Script ──
+  const afLink = `${p.shopeeLink}?af_id=${S.keys.shopee||'myshop_af2025'}&utm_source=tiktok`;
+  const scriptRaw = await callAI(`สร้าง script คลิปสั้น TikTok ภาษาไทย:
+ชื่อ: ${p.name} | ราคา: ฿${p.price} (ลดจาก ฿${p.originalPrice})
+ขาย 24ชม.: ${p.sales24h.toLocaleString()} ชิ้น | Trend: ${p.salesTrend}
+Hashtags: ${p.hashtags.join(', ')}
+สร้าง 4 ส่วน:
+## 🎬 HOOK (3 วินาทีแรก — ช็อคมาก)
+## 📢 เนื้อหาหลัก (จุดเด่น 3 ข้อ)
+## 🛒 CALL TO ACTION (ปักตะกร้า!)
+## #️⃣ HASHTAGS (20 อัน viral)
+สไตล์: gen-z วัยรุ่น energetic emoji เยอะ`);
+  agResult.script = scriptRaw;
+  agResult.hook = scriptRaw.split('## 📢')[0]?.replace(/##.*\n/g,'').trim()||'';
+  agResult.tags = (scriptRaw.match(/#\S+/g)||[]).join(' ');
+
+  // ── Step 1: Storyboard ──
+  renderAgSteps(1);
+  agSetBody('<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">📋 AI ออกแบบ Storyboard...</div></div>');
+  const storyRaw = await callAI(`สร้าง storyboard คลิป TikTok 15 วินาที สไตล์ "Hook 3วิ":
+สินค้า: ${p.name} ฿${p.price} | Trend: ${p.salesTrend}
+ตอบ JSON เท่านั้น ไม่มี backtick:
+{"title":"ชื่อคลิป","hook":"hook 1 ประโยค","scenes":[{"second":"0-3","visual":"ภาพ","text":"ข้อความ","voiceover":"พากย์","transition":"cut|zoom|slide"},{"second":"3-8","visual":"...","text":"...","voiceover":"...","transition":"..."},{"second":"8-15","visual":"...","text":"...","voiceover":"...","transition":"..."}],"music":"แนวเพลง","productionTips":["tip1","tip2"]}`,
+    'Thai TikTok creator. JSON only.');
+  agResult.story = parseJSON(storyRaw) || { title: p.name, hook: agResult.hook, scenes: [], music: 'upbeat', productionTips: [] };
+
+  // ── Step 2: Caption ──
+  renderAgSteps(2);
+  agSetBody('<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">✏️ AI เขียน Caption...</div></div>');
+  const capRaw = await callAI(`เขียน caption TikTok โปรโมท:
+${p.name} | ฿${p.price} (ลดจาก ฿${p.originalPrice}) | Trend: ${p.salesTrend}
+ขาย ${p.sales24h.toLocaleString()} ชิ้น/24ชม. | Link: ${afLink}
+ต้องการ: hook ดึงดูด + จุดเด่น 3 ข้อ + ราคา + CTA "ปักตะกร้าก่อนของหมด!" + Hashtags 15 อัน
+สไตล์: gen-z วัยรุ่น สนุก emoji เยอะๆ`);
+  agResult.caption = capRaw;
+
+  // ── Step 3: Affiliate Link (instant) ──
+  renderAgSteps(3);
+  agResult.afLink = afLink;
+  await new Promise(r => setTimeout(r, 400)); // short visual pause
+
+  // ── Step 4: Export Pack ──
+  renderAgSteps(4);
+  agSetBody('<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">📦 AI สร้างแพ็กโพสต์ 3 platform...</div></div>');
+  const exportRaw = await callAI(`สร้างแพ็กเกจโพสต์ครบ 3 platform สำหรับ:
+${p.name} | ฿${p.price} | Trend: ${p.salesTrend} | Link: ${afLink} | Tags: ${p.hashtags.join(' ')}
+JSON เท่านั้น ไม่มี backtick:
+{"tiktokCaption":"...","tiktokHashtags":"...","igCaption":"...","igHashtags":"...","fbCaption":"...","scheduleSuggestion":"เวลาดีสุด","expectedViews":"ยอดวิวที่คาด","tips":["tip1","tip2"]}`,
+    'Thai social media expert. JSON only.');
+  agResult.export = parseJSON(exportRaw) || {};
+
+  // ── Done: render full result ──
+  renderAgSteps(99); // all done
+  renderAgResult(p);
+}
+
+function renderAgResult(p) {
+  const d = agResult.export || {};
+  const story = agResult.story || {};
+  const afLink = agResult.afLink;
+
+  agSetBody(`
+    <!-- Script -->
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+        <div style="color:var(--orange);font-size:12px;font-weight:700">🎬 Script</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-copy btn-sm" onclick="navigator.clipboard.writeText(agResult.script);this.textContent='✅';setTimeout(()=>this.textContent='📋',1500)">📋</button>
+          <button class="btn btn-ghost btn-sm" onclick="ttsSpeak(agResult.hook)">🔊 ฟัง Hook</button>
+          <button class="btn btn-ghost btn-sm" onclick="ttsSpeak(agResult.script)">🔊 ฟัง Full</button>
+        </div>
+      </div>
+      <pre style="color:#ccc;font-family:var(--font);font-size:11px;line-height:1.7;white-space:pre-wrap;background:#0a0c18;padding:11px;border-radius:9px;border:1px solid var(--border);max-height:140px;overflow-y:auto">${agResult.script}</pre>
+    </div>
+
+    <!-- Storyboard -->
+    <div style="margin-bottom:14px">
+      <div style="color:var(--purple);font-size:12px;font-weight:700;margin-bottom:7px">📋 Storyboard — ${story.title||''}</div>
+      <div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:4px">
+        ${(story.scenes||[]).map((sc,i)=>`
+          <div style="min-width:170px;background:#0a0c18;border:1px solid var(--border);border-radius:9px;padding:9px">
+            <div style="color:var(--orange);font-size:9px;font-weight:700;margin-bottom:4px">⏱ ${sc.second}</div>
+            <div style="color:var(--text);font-size:10px;font-weight:600;margin-bottom:3px">${sc.text}</div>
+            <div style="color:var(--muted);font-size:9px;margin-bottom:2px">🎥 ${sc.visual}</div>
+            <div style="color:#4a5080;font-size:9px">🎤 ${sc.voiceover}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Affiliate Link -->
+    <div style="margin-bottom:14px">
+      <div style="color:var(--green);font-size:12px;font-weight:700;margin-bottom:6px">🔗 Affiliate Link</div>
+      <div style="display:flex;gap:7px;align-items:center">
+        <div class="af-link" style="flex:1;font-size:10px">${afLink}</div>
+        <button class="btn btn-copy btn-sm" onclick="navigator.clipboard.writeText(agResult.afLink);this.textContent='✅';setTimeout(()=>this.textContent='📋',1500)">📋</button>
+      </div>
+    </div>
+
+    <!-- Post Pack 3 platforms -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+        <div style="color:var(--yellow);font-size:12px;font-weight:700">📦 แพ็กเกจโพสต์ 3 Platform</div>
+        <div style="display:flex;gap:6px">
+          ${d.scheduleSuggestion?`<span class="badge badge-green">⏰ ${d.scheduleSuggestion}</span>`:''}
+          ${d.expectedViews?`<span class="badge badge-orange">👁 ${d.expectedViews}</span>`:''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${[
+          ['🎵 TikTok', (d.tiktokCaption||agResult.caption||'')+'\n\n'+(d.tiktokHashtags||agResult.tags||''), '#ff2d55'],
+          ['📸 Instagram', (d.igCaption||'')+'\n\n'+(d.igHashtags||''), '#e1306c'],
+          ['📘 Facebook', d.fbCaption||'', '#1877f2']
+        ].map(([plat,content,color])=>`
+          <div style="background:#ffffff06;border:1px solid ${color}22;border-radius:9px;padding:10px 12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="color:${color};font-size:11px;font-weight:700">${plat}</span>
+              <div style="display:flex;gap:5px">
+                <button class="btn btn-copy btn-sm" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(content)}'));this.textContent='✅';setTimeout(()=>this.textContent='📋',1500)">📋 คัดลอก</button>
+                <button class="btn btn-ghost btn-sm" style="font-size:10px;padding:3px 8px" onclick="ttsSpeak(decodeURIComponent('${encodeURIComponent(content.split('#')[0].trim())}'))">🔊</button>
+              </div>
+            </div>
+            <pre style="color:#bbb;font-family:var(--font);font-size:10px;line-height:1.6;white-space:pre-wrap;max-height:90px;overflow-y:auto;margin:0">${content}</pre>
+          </div>`).join('')}
+      </div>
+      ${d.tips?`<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px">${d.tips.map(t=>`<div style="background:#ffffff07;border-radius:6px;padding:5px 10px;display:flex;gap:5px;align-items:center"><span style="color:var(--yellow)">💡</span><span style="color:#999;font-size:10px">${t}</span></div>`).join('')}</div>`:''}
+    </div>
+  `);
+
+  // Footer buttons
+  document.getElementById('ag-footer').innerHTML = `
+    <button class="btn btn-ghost btn-sm" onclick="closeModal('autogen-modal')">ปิด</button>
+    <button class="btn btn-ghost btn-sm" onclick="openAutoGen(${p.id})">🔄 Gen ใหม่</button>
+    <button class="btn btn-primary btn-sm" onclick="ttsSpeak(agResult.hook)">🔊 ฟัง Hook</button>
+    <button class="btn btn-green btn-sm" onclick="copyAllToClipboard()">📋 คัดลอกทั้งหมด</button>
+  `;
+}
+
+function copyAllToClipboard() {
+  const d = agResult.export || {};
+  const all = [
+    '=== 🎬 SCRIPT ===', agResult.script||'',
+    '\n=== 🎵 TIKTOK ===', (d.tiktokCaption||agResult.caption||'') + '\n' + (d.tiktokHashtags||agResult.tags||''),
+    '\n=== 🔗 LINK ===', agResult.afLink||''
+  ].join('\n');
+  navigator.clipboard.writeText(all);
+  const btn = event.target;
+  btn.textContent='✅ คัดลอกแล้ว!'; btn.className='btn btn-copy btn-sm';
+  setTimeout(()=>{ btn.textContent='📋 คัดลอกทั้งหมด'; btn.className='btn btn-green btn-sm'; },2000);
+}
+
+// ════════════════════════════════════════════════
 // ANALYTICS
 // ════════════════════════════════════════════════
 // Seeded pseudo-random — stable numbers across re-renders
@@ -1428,6 +1767,7 @@ function loadKeys() {
   document.getElementById('key-pexels').value = S.keys.pexels;
   document.getElementById('key-shopee').value = S.keys.shopee;
   document.getElementById('key-elevenlabs').value = S.keys.elevenlabs || '';
+  document.getElementById('key-googletts').value = S.keys.googletts || '';
 }
 
 function saveKeys() {
@@ -1436,6 +1776,7 @@ function saveKeys() {
   S.keys.pexels = document.getElementById('key-pexels').value.trim();
   S.keys.shopee = document.getElementById('key-shopee').value.trim()||'myshop_af2025';
   S.keys.elevenlabs = document.getElementById('key-elevenlabs').value.trim();
+  S.keys.googletts = document.getElementById('key-googletts').value.trim();
   localStorage.setItem('sth_keys', JSON.stringify(S.keys));
   updateSetupStatus();
 }
@@ -1459,7 +1800,7 @@ function renderSetup() {
   updateSetupStatus();
   document.getElementById('setup-status-list').innerHTML = [
     [!!(S.keys.gemini||S.keys.groq),'🤖 AI Engine (Gemini/Groq)'],
-    [!!S.keys.elevenlabs,'🎙️ ElevenLabs TTS (AI Voice)'],
+    [!!(S.keys.googletts||S.keys.elevenlabs),'🎙️ TTS (Google / ElevenLabs)'],
     [!!S.keys.pexels,'🖼️ Pexels (รูปภาพ)'],
     [!!S.keys.shopee,'🛒 Shopee Affiliate ID'],
   ].map(([ok,label])=>`
@@ -1472,7 +1813,8 @@ function renderSetup() {
   document.getElementById('setup-guide').innerHTML = [
     {title:'Gemini API (AI ฟรี 1500 req/วัน)',steps:['ไปที่ aistudio.google.com/app/apikey','ล็อกอิน Google','คลิก "Create API Key"','คัดลอก key มาใส่ด้านบน'],color:'var(--purple)',url:'https://aistudio.google.com/app/apikey'},
     {title:'Groq API (AI ฟรี เร็วมาก)',steps:['ไปที่ console.groq.com','สมัคร account ฟรี','ไปที่ API Keys → Create','คัดลอก key มาใส่'],color:'var(--orange)',url:'https://console.groq.com/keys'},
-    {title:'ElevenLabs TTS (เสียง AI คุณภาพสูง)',steps:['ไปที่ elevenlabs.io','สมัคร account (ฟรี 10k chars/เดือน)','ไปที่ Settings → API Keys','คัดลอก key มาใส่ด้านบน'],color:'#fd79a8',url:'https://elevenlabs.io/app/settings/api-keys'},
+    {title:'Google Cloud TTS (เสียงไทย Neural2 ดีที่สุด)',steps:['ไปที่ console.cloud.google.com','เปิดใช้ "Cloud Text-to-Speech API"','ไปที่ APIs & Services → Credentials → Create API Key','คัดลอก key มาใส่ด้านบน'],color:'#4285f4',url:'https://console.cloud.google.com/apis/library/texttospeech.googleapis.com'},
+    {title:'ElevenLabs TTS (ฟรี 10k chars/เดือน)',steps:['ไปที่ elevenlabs.io','สมัคร account ฟรี','ไปที่ Settings → API Keys','คัดลอก key มาใส่'],color:'#fd79a8',url:'https://elevenlabs.io/app/settings/api-keys'},
     {title:'Pexels API (รูปภาพ ฟรี)',steps:['ไปที่ pexels.com/api','สมัคร account','Request API Access','คัดลอก key มาใส่'],color:'var(--green)',url:'https://www.pexels.com/api/'},
   ].map(g=>`
     <div style="background:#ffffff06;border-radius:9px;padding:11px 13px;border-left:3px solid ${g.color}">
