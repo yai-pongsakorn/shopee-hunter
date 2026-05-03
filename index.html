@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>🔥 Shopee Trend Hunter — Free Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:       #07080f;
+  --bg2:      #0d0f1c;
+  --bg3:      #13162a;
+  --border:   #1e2240;
+  --orange:   #ff6b35;
+  --red:      #ff4757;
+  --green:    #2ed573;
+  --purple:   #a29bfe;
+  --yellow:   #ffd32a;
+  --blue:     #3498db;
+  --text:     #e8eaf0;
+  --muted:    #4a5080;
+  --font:     'Sarabun', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:#ff6b3540;border-radius:3px}
+
+/* ── NAV ── */
+#nav{position:sticky;top:0;z-index:200;background:rgba(7,8,15,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:0 20px}
+.nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0}
+.logo{padding:12px 20px 12px 0;border-right:1px solid var(--border);cursor:pointer;flex-shrink:0}
+.logo-title{font-size:15px;font-weight:800;background:linear-gradient(135deg,#ff6b35,#ff4757,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.logo-sub{font-size:9px;color:var(--muted);margin-top:1px}
+.tabs{display:flex;overflow-x:auto;padding-left:10px;flex:1}
+.tab-btn{padding:15px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--font);font-size:12px;cursor:pointer;font-weight:500;white-space:nowrap;transition:color .2s,border-color .2s}
+.tab-btn.active{color:var(--orange);border-bottom-color:var(--orange);font-weight:700}
+.tab-btn:hover:not(.active){color:#888}
+.live-dot{margin-left:auto;display:flex;align-items:center;gap:5px;flex-shrink:0;padding-left:14px}
+.dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:pulse 2s ease infinite}
+
+/* ── PANELS ── */
+.panel{display:none;max-width:1280px;margin:0 auto;padding:22px 20px}
+.panel.active{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px}
+.card-title{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border:none;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+.btn-primary:hover{opacity:.85;transform:translateY(-1px)}
+.btn-primary:disabled{background:#222;color:#444;cursor:not-allowed;transform:none}
+.btn-green{background:linear-gradient(135deg,var(--green),#00b894);color:#000}
+.btn-purple{background:linear-gradient(135deg,var(--purple),#6c5ce7);color:#fff}
+.btn-ghost{background:#ffffff0a;border:1px solid var(--border);color:#888}
+.btn-ghost:hover{color:var(--text);border-color:#444}
+.btn-sm{padding:5px 12px;font-size:11px;border-radius:7px}
+.btn-copy{background:#ff6b3518;border:1px solid #ff6b3533;color:var(--orange)}
+.btn-copy.done{background:#2ed57318;border-color:#2ed57333;color:var(--green)}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+/* ── INPUTS ── */
+.inp{background:#ffffff09;border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;width:100%;transition:border-color .2s}
+.inp:focus{border-color:var(--orange)}
+.sel{background:#0d0f1c;border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:var(--font);font-size:12px;outline:none}
+.sel option{background:#1a1a2e;color:#fff}
+textarea.inp{resize:vertical;min-height:120px;line-height:1.7}
+
+/* ── BADGE ── */
+.badge{display:inline-block;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700}
+.badge-orange{background:#ff6b3518;color:var(--orange);border:1px solid #ff6b3530}
+.badge-green{background:#2ed57318;color:var(--green)}
+.badge-red{background:#ff475718;color:var(--red)}
+.badge-purple{background:#a29bfe18;color:var(--purple)}
+
+/* ── TREND BAR ── */
+.tbar-wrap{background:#1a1a2e;border-radius:4px;height:6px;overflow:hidden}
+.tbar-fill{height:100%;border-radius:4px;transition:width 1s ease}
+
+/* ── PRODUCT CARD ── */
+.pcard{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s;position:relative;cursor:default}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,107,53,.15)}
+.pcard.hot{border-color:#ff3f3f33;box-shadow:0 0 16px #ff3f3f10}
+.pcard-body{padding:12px}
+.pcard-name{color:var(--text);font-size:13px;font-weight:600;margin:6px 0 8px;line-height:1.4;min-height:36px}
+.pcard-price{color:var(--red);font-size:18px;font-weight:800}
+.pcard-original{color:var(--muted);font-size:11px;text-decoration:line-through;margin-left:6px}
+.pcard-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:9px 0}
+.stat-box{background:#ffffff07;border-radius:6px;padding:6px 8px}
+.stat-label{color:var(--muted);font-size:9px}
+.stat-val{font-size:12px;font-weight:700;margin-top:1px}
+.pcard-tags{display:flex;flex-wrap:wrap;gap:3px;margin:8px 0 10px}
+.tag{background:#ff6b350e;color:var(--orange);border:1px solid #ff6b3520;border-radius:20px;padding:1px 7px;font-size:9px}
+.pcard-actions{display:flex;gap:7px}
+.pcard-actions .btn{flex:1;padding:7px 0;font-size:11px;justify-content:center}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid #ff6b3540;border-radius:18px;max-width:580px;width:100%;padding:24px;max-height:88vh;overflow-y:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--text)}
+pre.script-out{color:#ddd;font-family:var(--font);font-size:13px;line-height:1.8;white-space:pre-wrap;background:#0a0c18;padding:14px;border-radius:10px;border:1px solid var(--border);margin:0 0 12px}
+
+/* ── SETUP PANEL ── */
+.setup-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.setup-label{color:var(--muted);font-size:12px;min-width:130px}
+.setup-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-ok{background:var(--green);box-shadow:0 0 6px var(--green)}
+.status-no{background:var(--muted)}
+
+/* ── SPARKLINE ── */
+.spark svg{display:block}
+
+/* ── SPINNER ── */
+.spin-wrap{display:flex;flex-direction:column;align-items:center;gap:9px;padding:30px}
+.spinner{width:32px;height:32px;border:3px solid #ff6b3520;border-top:3px solid var(--orange);border-radius:50%;animation:spin .8s linear infinite}
+.spin-label{color:var(--muted);font-size:12px}
+
+/* ── VIDEO PREVIEW ── */
+.vpreview{width:210px;height:373px;border-radius:18px;overflow:hidden;position:relative;flex-shrink:0;border:2px solid #ffffff0a}
+.vpreview-bg{position:absolute;inset:0}
+.vpreview-content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 14px;z-index:5}
+.vpreview-bottom{position:absolute;bottom:0;left:0;right:0;padding:10px 12px;background:linear-gradient(transparent,rgba(0,0,0,.85));z-index:10}
+.vpreview-top{position:absolute;top:8px;left:0;right:0;padding:0 10px;z-index:10;display:flex;gap:3px}
+.vpbar{height:2px;flex:1;border-radius:2px;transition:background .3s}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{padding:9px 10px;color:var(--muted);font-size:10px;font-weight:700;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:8px 10px;border-bottom:1px solid #0f1020;font-size:11px;vertical-align:middle}
+.tbl tr:hover td{background:#ffffff03}
+
+/* ── WORKFLOW ── */
+.wf-wrap{display:flex;align-items:center;gap:0;margin-bottom:18px}
+.wf-step{flex:1;padding:12px 10px;background:#ffffff08;border:1px solid var(--border);border-radius:11px;cursor:pointer;text-align:center;transition:all .2s}
+.wf-step:hover{border-color:#ff6b3544}
+.wf-icon{font-size:20px;margin-bottom:4px}
+.wf-name{font-size:11px;font-weight:700}
+.wf-desc{font-size:9px;color:var(--muted);margin-top:2px}
+.wf-arrow{color:#1e2240;font-size:20px;padding:0 5px;flex-shrink:0}
+
+/* ── TTS PLAYER ── */
+.tts-bar{background:#0a0c18;border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-top:10px}
+.tts-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;border:none;flex-shrink:0;transition:all .2s}
+
+/* ── KEYFRAMES ── */
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.anim-up{animation:slideUp .35s ease both}
+
+/* ── TREND SPY ── */
+.trend-score-big{font-size:56px;font-weight:900;background:linear-gradient(135deg,var(--orange),var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.related-kw{background:#ff6b3510;color:var(--orange);border:1px solid #ff6b3525;border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;transition:all .2s;display:inline-block;margin:3px}
+.related-kw:hover{background:#ff6b3520}
+
+/* ── AFFILIATE ── */
+.af-link{background:#0a0c18;border-radius:8px;padding:10px 12px;word-break:break-all;font-family:monospace;font-size:10px;color:var(--green);border:1px solid #2ed57322}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ NAV ══════════════ -->
+<div id="nav">
+  <div class="nav-inner">
+    <div class="logo" onclick="showTab('dashboard')">
+      <div class="logo-title">🔥 Shopee Trend Hunter</div>
+      <div class="logo-sub">v4.0 · Free Edition · AI Powered</div>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab-btn active" onclick="showTab('dashboard')" data-tab="dashboard">🏠 Dashboard</button>
+      <button class="tab-btn" onclick="showTab('hunter')" data-tab="hunter">🔥 Product Hunter</button>
+      <button class="tab-btn" onclick="showTab('trendspy')" data-tab="trendspy">🔭 Trend Spy</button>
+      <button class="tab-btn" onclick="showTab('affiliate')" data-tab="affiliate">🛒 Affiliate</button>
+      <button class="tab-btn" onclick="showTab('clipbuilder')" data-tab="clipbuilder">🎬 Clip Builder</button>
+      <button class="tab-btn" onclick="showTab('analytics')" data-tab="analytics">📊 Analytics</button>
+      <button class="tab-btn" onclick="showTab('setup')" data-tab="setup">⚙️ ตั้งค่า</button>
+    </div>
+    <div class="live-dot"><div class="dot"></div><span style="color:var(--green);font-size:9px">LIVE</span></div>
+  </div>
+</div>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<div class="panel active" id="panel-dashboard">
+  <!-- Hero -->
+  <div class="card" style="background:linear-gradient(135deg,#0d0f1c,#12082a,#0d0f1c);border-color:#ff6b3522;margin-bottom:16px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-50px;right:-50px;width:220px;height:220px;background:radial-gradient(circle,#ff6b3510,transparent 70%);pointer-events:none"></div>
+    <h1 style="font-size:24px;font-weight:900;background:linear-gradient(135deg,#ff6b35,#ff4757,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">🔥 Shopee Trend Hunter</h1>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:20px">ระบบหาสินค้า Trending · สร้างคลิป · ปักตะกร้า อัตโนมัติ · ฟรี 100%</p>
+    <div class="grid-4" id="dash-kpi">
+      <div class="card" style="padding:12px"><div style="color:var(--muted);font-size:10px">💰 รายได้รวม</div><div style="color:var(--yellow);font-size:22px;font-weight:900" id="kpi-earn">฿0</div></div>
+      <div class="card" style="padding:12px"><div style="color:var(--muted);font-size:10px">👁 ยอดวิวรวม</div><div style="color:var(--purple);font-size:22px;font-weight:900" id="kpi-views">0</div></div>
+      <div class="card" style="padding:12px"><div style="color:var(--muted);font-size:10px">🛒 ออเดอร์รวม</div><div style="color:var(--green);font-size:22px;font-weight:900" id="kpi-orders">0</div></div>
+      <div class="card" style="padding:12px"><div style="color:var(--muted);font-size:10px">🔥 สินค้า Trending</div><div style="color:var(--orange);font-size:22px;font-weight:900" id="kpi-products">8</div></div>
+    </div>
+  </div>
+  <!-- Workflow -->
+  <div style="color:var(--muted);font-size:11px;font-weight:700;margin-bottom:10px">⚡ WORKFLOW — คลิกเพื่อเริ่มแต่ละขั้นตอน</div>
+  <div class="wf-wrap" id="wf-wrap"></div>
+  <!-- Bottom grid -->
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">🔥 สินค้า Hot ตอนนี้</div>
+      <div id="dash-top-products"></div>
+      <button class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center;font-size:11px" onclick="showTab('hunter')">ดูทั้งหมด →</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 คลิปที่ดีที่สุด</div>
+      <div id="dash-best-clip"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ Quick Actions</div>
+      <div id="dash-quick"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PRODUCT HUNTER ══════════════ -->
+<div class="panel" id="panel-hunter">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <div>
+      <h2 style="font-size:19px;font-weight:800">🔥 Product Hunter</h2>
+      <div style="color:var(--muted);font-size:12px" id="hunter-sub">สินค้า Trending บน Shopee</div>
+    </div>
+    <button class="btn btn-primary" id="btn-ai-scan" onclick="aiScanProducts()"><span id="scan-icon">⚡</span> AI Scan สินค้าใหม่</button>
+  </div>
+  <!-- Stats bar -->
+  <div class="grid-4" style="margin-bottom:14px" id="hunter-stats"></div>
+  <!-- Filter -->
+  <div style="display:flex;gap:9px;margin-bottom:12px;flex-wrap:wrap">
+    <input class="inp" id="hunter-search" placeholder="🔍 ค้นหาสินค้า..." oninput="filterProducts()" style="flex:1;min-width:180px"/>
+    <select class="sel" id="hunter-cat" onchange="filterProducts()">
+      <option value="all">🔥 ทั้งหมด</option>
+      <option value="beauty">💄 ความงาม</option>
+      <option value="fashion">👗 แฟชั่น</option>
+      <option value="gadget">📱 แกดเจ็ต</option>
+      <option value="home">🏠 บ้าน & ครัว</option>
+      <option value="health">💊 สุขภาพ</option>
+      <option value="food">🍜 อาหาร</option>
+    </select>
+    <select class="sel" id="hunter-sort" onchange="filterProducts()">
+      <option value="trendScore">Trend Score</option>
+      <option value="sales24h">ยอดขาย 24ชม.</option>
+      <option value="searchSpike">Search Spike</option>
+      <option value="commission">Commission</option>
+    </select>
+  </div>
+  <div class="grid-auto" id="product-grid"></div>
+</div>
+
+<!-- ══════════════ TREND SPY ══════════════ -->
+<div class="panel" id="panel-trendspy">
+  <h2 style="font-size:19px;font-weight:800;margin-bottom:4px">🔭 Trend Spy</h2>
+  <p style="color:var(--muted);font-size:12px;margin-bottom:18px">วิเคราะห์ keyword ด้วย AI ก่อนลงทุนทำคลิป</p>
+  <div style="display:flex;gap:9px;margin-bottom:14px">
+    <input class="inp" id="spy-kw" placeholder="พิมพ์ keyword เช่น คอลลาเจน, ลิปสติก..." onkeydown="if(event.key==='Enter')spyAnalyze()"/>
+    <button class="btn btn-primary" id="btn-spy" onclick="spyAnalyze()">🔍 วิเคราะห์</button>
+  </div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px" id="spy-quick"></div>
+  <div id="spy-result"></div>
+</div>
+
+<!-- ══════════════ AFFILIATE ══════════════ -->
+<div class="panel" id="panel-affiliate">
+  <h2 style="font-size:19px;font-weight:800;margin-bottom:4px">🛒 Affiliate Builder</h2>
+  <p style="color:var(--muted);font-size:12px;margin-bottom:18px">สร้าง affiliate link + caption พร้อมโพสต์</p>
+  <div class="grid-2">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-title">📦 เลือกสินค้า</div>
+        <select class="sel" id="af-product-sel" onchange="afUpdate()" style="width:100%;margin-bottom:10px"></select>
+        <div class="grid-2" id="af-stats"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📱 Platform</div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-primary btn-sm af-plat active-plat" data-p="tiktok" onclick="setPlat(this)" style="flex:1;justify-content:center">🎵 TikTok</button>
+          <button class="btn btn-ghost btn-sm af-plat" data-p="ig" onclick="setPlat(this)" style="flex:1;justify-content:center">📸 Instagram</button>
+          <button class="btn btn-ghost btn-sm af-plat" data-p="fb" onclick="setPlat(this)" style="flex:1;justify-content:center">📘 Facebook</button>
+        </div>
+      </div>
+      <div class="card" style="border-color:#2ed57322">
+        <div class="card-title">🔗 Affiliate Link</div>
+        <div class="af-link" id="af-link-box">—</div>
+        <div style="display:flex;gap:7px;margin-top:9px">
+          <button class="btn btn-copy btn-sm" id="btn-copy-af" onclick="copyAf()">📋 คัดลอก</button>
+          <span style="color:var(--muted);font-size:11px;align-self:center">รายได้/ออเดอร์: <strong id="af-earn" style="color:var(--yellow)">฿0</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+        <div class="card-title" style="margin:0">✏️ AI Caption Generator</div>
+        <button class="btn btn-primary btn-sm" id="btn-gen-caption" onclick="genCaption()">⚡ สร้าง Caption</button>
+      </div>
+      <div id="af-caption-area" style="flex:1;display:flex;flex-direction:column">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;color:#222;flex-direction:column;gap:6px;min-height:200px" id="af-caption-empty">
+          <div style="font-size:32px">✏️</div>
+          <div style="font-size:12px">กดปุ่มเพื่อให้ AI เขียน caption</div>
+        </div>
+        <textarea class="inp" id="af-caption-text" style="flex:1;min-height:240px;display:none"></textarea>
+        <div style="gap:7px;margin-top:9px;display:none" id="af-caption-actions">
+          <button class="btn btn-copy btn-sm" id="btn-copy-cap" onclick="copyCap()">📋 คัดลอก Caption</button>
+          <button class="btn btn-ghost btn-sm" onclick="genCaption()">🔄 สร้างใหม่</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- TTS Section -->
+  <div class="card" style="margin-top:14px" id="af-tts-section">
+    <div class="card-title">🎙️ TTS พากย์เสียง (ฟรี — Web Speech API)</div>
+    <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <select class="sel" id="tts-voice" style="min-width:180px"></select>
+      <select class="sel" id="tts-rate">
+        <option value="0.8">ช้า</option>
+        <option value="1" selected>ปกติ</option>
+        <option value="1.2">เร็ว</option>
+        <option value="1.5">เร็วมาก</option>
+      </select>
+      <button class="btn btn-purple btn-sm" onclick="ttsSpeak()">🔊 ฟัง Caption</button>
+      <button class="btn btn-ghost btn-sm" onclick="ttsPause()">⏸ หยุด</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CLIP BUILDER ══════════════ -->
+<div class="panel" id="panel-clipbuilder">
+  <h2 style="font-size:19px;font-weight:800;margin-bottom:4px">🎬 Clip Builder</h2>
+  <p style="color:var(--muted);font-size:12px;margin-bottom:18px">ออกแบบ storyboard + preview คลิป + พากย์เสียงก่อนถ่ายจริง</p>
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:start">
+    <!-- Left -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-title">📦 สินค้า</div>
+        <select class="sel" id="clip-product-sel" onchange="clipUpdate()" style="width:100%;margin-bottom:10px"></select>
+        <div class="grid-3" id="clip-prod-stats"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎭 Template</div>
+        <div id="clip-templates" style="display:flex;flex-direction:column;gap:7px"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎙️ สคริปต์พากย์เสียง</div>
+        <div id="clip-script-display" style="color:var(--muted);font-size:12px;line-height:1.7;min-height:60px">เลือก template แล้วกด "AI Storyboard" เพื่อสร้างสคริปต์</div>
+        <div style="display:flex;gap:7px;margin-top:10px">
+          <button class="btn btn-purple btn-sm" onclick="ttsScript()">🔊 ฟัง Script</button>
+          <button class="btn btn-ghost btn-sm" onclick="ttsPause()">⏸ หยุด</button>
+        </div>
+      </div>
+    </div>
+    <!-- Center: preview -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div class="vpreview" id="vpreview">
+        <div class="vpreview-bg" id="vp-bg"></div>
+        <div class="vpreview-top" id="vp-bars"></div>
+        <div class="vpreview-content" id="vp-content"></div>
+        <div class="vpreview-bottom" id="vp-bottom"></div>
+      </div>
+      <div style="display:flex;gap:7px;align-items:center">
+        <button onclick="vpPrev()" class="btn btn-ghost btn-sm" style="width:30px;height:30px;padding:0;justify-content:center">‹</button>
+        <button onclick="vpTogglePlay()" id="btn-vp-play" class="btn btn-primary" style="width:44px;height:44px;padding:0;justify-content:center;font-size:18px;border-radius:12px">▶</button>
+        <button onclick="vpNext()" class="btn btn-ghost btn-sm" style="width:30px;height:30px;padding:0;justify-content:center">›</button>
+      </div>
+      <div style="color:var(--muted);font-size:10px" id="vp-scene-label">Scene 1 / 3</div>
+      <button class="btn btn-green" style="width:100%" onclick="genExportPack()"><span id="export-icon">📦</span> Export แพ็กเกจโพสต์</button>
+    </div>
+    <!-- Right: storyboard -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div class="card-title" style="margin:0">📋 Storyboard</div>
+          <button class="btn btn-primary btn-sm" id="btn-ai-story" onclick="genAiStoryboard()">✨ AI Storyboard</button>
+        </div>
+        <div id="storyboard-cards" style="display:flex;flex-direction:column;gap:7px"></div>
+      </div>
+      <div id="ai-story-result"></div>
+    </div>
+  </div>
+  <!-- Export result -->
+  <div id="export-pack-result" style="margin-top:16px"></div>
+</div>
+
+<!-- ══════════════ ANALYTICS ══════════════ -->
+<div class="panel" id="panel-analytics">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div>
+      <h2 style="font-size:19px;font-weight:800">📊 Analytics Dashboard</h2>
+      <p style="color:var(--muted);font-size:12px">ภาพรวม performance คลิป + รายได้ affiliate</p>
+    </div>
+    <button class="btn btn-purple" id="btn-ai-insight" onclick="genInsight()">🧠 AI วิเคราะห์</button>
+  </div>
+  <div class="grid-4" id="analytics-kpi" style="margin-bottom:16px"></div>
+  <div class="grid-2" style="margin-bottom:14px">
+    <div class="card" id="analytics-platform"></div>
+    <div class="card" style="border-color:#a29bfe22">
+      <div class="card-title" style="color:var(--purple)">🧠 AI Insight</div>
+      <div id="analytics-insight-body" style="color:#2a2a40;font-size:12px;text-align:center;padding:30px 0">กด "AI วิเคราะห์" เพื่อรับคำแนะนำ</div>
+    </div>
+  </div>
+  <div class="card" style="overflow:hidden">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div class="card-title" style="margin:0">🎬 ประวัติคลิปทั้งหมด</div>
+      <div style="display:flex;gap:6px" id="analytics-sort-btns"></div>
+    </div>
+    <div style="overflow-x:auto"><table class="tbl" id="analytics-table"><thead id="analytics-thead"></thead><tbody id="analytics-tbody"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══════════════ SETUP ══════════════ -->
+<div class="panel" id="panel-setup">
+  <h2 style="font-size:19px;font-weight:800;margin-bottom:4px">⚙️ ตั้งค่า API Keys</h2>
+  <p style="color:var(--muted);font-size:12px;margin-bottom:20px">ทุก API ฟรี 100% — คลิกลิงก์เพื่อสมัคร</p>
+  <div class="grid-2" style="gap:16px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+      <div class="card" style="border-color:#a29bfe22">
+        <div class="card-title" style="color:var(--purple)">🤖 AI Engine (เลือก 1 หรือทั้งคู่)</div>
+        <div class="setup-row">
+          <div class="setup-status" id="st-gemini"></div>
+          <span class="setup-label">Google Gemini API</span>
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn btn-ghost btn-sm">สมัครฟรี ↗</a>
+        </div>
+        <input class="inp" id="key-gemini" placeholder="AIza..." oninput="saveKeys()" style="margin-bottom:10px;font-family:monospace;font-size:12px"/>
+        <div class="setup-row">
+          <div class="setup-status" id="st-groq"></div>
+          <span class="setup-label">Groq API (Llama 3)</span>
+          <a href="https://console.groq.com/keys" target="_blank" class="btn btn-ghost btn-sm">สมัครฟรี ↗</a>
+        </div>
+        <input class="inp" id="key-groq" placeholder="gsk_..." oninput="saveKeys()" style="font-family:monospace;font-size:12px"/>
+        <div style="margin-top:10px">
+          <div style="color:var(--muted);font-size:10px;margin-bottom:6px">ใช้ Engine ไหน?</div>
+          <div style="display:flex;gap:7px">
+            <button class="btn btn-ghost btn-sm ai-engine-btn" data-e="gemini" onclick="setEngine(this)">Gemini</button>
+            <button class="btn btn-primary btn-sm ai-engine-btn" data-e="groq" onclick="setEngine(this)">Groq (เร็วกว่า)</button>
+            <button class="btn btn-ghost btn-sm ai-engine-btn" data-e="auto" onclick="setEngine(this)">Auto</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:#2ed57322">
+        <div class="card-title" style="color:var(--green)">🖼️ Pexels API (รูปภาพ)</div>
+        <div class="setup-row">
+          <div class="setup-status" id="st-pexels"></div>
+          <span class="setup-label">Pexels</span>
+          <a href="https://www.pexels.com/api/" target="_blank" class="btn btn-ghost btn-sm">สมัครฟรี ↗</a>
+        </div>
+        <input class="inp" id="key-pexels" placeholder="Pexels API Key..." oninput="saveKeys()" style="font-family:monospace;font-size:12px"/>
+      </div>
+
+      <div class="card" style="border-color:#3498db22">
+        <div class="card-title" style="color:var(--blue)">🛒 Shopee Affiliate</div>
+        <div class="setup-row">
+          <div class="setup-status" id="st-shopee"></div>
+          <span class="setup-label">Affiliate ID</span>
+          <a href="https://affiliate.shopee.co.th" target="_blank" class="btn btn-ghost btn-sm">สมัครฟรี ↗</a>
+        </div>
+        <input class="inp" id="key-shopee" placeholder="your_affiliate_id" oninput="saveKeys()"/>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-title">🎙️ TTS (Text-to-Speech)</div>
+        <div style="background:#0a0c18;border-radius:9px;padding:12px;border:1px solid #2ed57322">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <div class="setup-status status-ok"></div>
+            <span style="color:var(--green);font-size:12px;font-weight:700">Web Speech API — ฟรี ไม่ต้อง Key!</span>
+          </div>
+          <p style="color:var(--muted);font-size:11px;line-height:1.6">อยู่ในตัว Browser ทุกตัว รองรับเสียงไทย ใช้งานได้ทันทีโดยไม่ต้องสมัครอะไร</p>
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="ttsTest()">🔊 ทดสอบเสียง</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 สถานะระบบ</div>
+        <div id="setup-status-list"></div>
+      </div>
+
+      <div class="card" style="border-color:#ffd32a22">
+        <div class="card-title" style="color:var(--yellow)">📋 วิธีสมัคร API ฟรี</div>
+        <div style="display:flex;flex-direction:column;gap:7px" id="setup-guide"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SCRIPT MODAL ══════════════ -->
+<div class="modal-bg" id="script-modal" onclick="closeModal('script-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <h3 style="font-size:15px;font-weight:700;color:var(--orange)" id="script-modal-title">🎬 AI Script</h3>
+      <button class="modal-close" onclick="closeModal('script-modal')">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px" id="script-sub-tabs">
+      <button class="btn btn-primary btn-sm script-stab" data-t="full" onclick="setScriptTab(this)">📝 Full</button>
+      <button class="btn btn-ghost btn-sm script-stab" data-t="hook" onclick="setScriptTab(this)">🎣 Hook</button>
+      <button class="btn btn-ghost btn-sm script-stab" data-t="tags" onclick="setScriptTab(this)">#️⃣ Tags</button>
+    </div>
+    <div id="script-modal-body"></div>
+    <div style="display:flex;gap:8px;margin-top:10px" id="script-modal-actions"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+const S = {
+  products: [],
+  keys: { gemini:'', groq:'', pexels:'', shopee:'myshop_af2025' },
+  engine: 'groq',
+  clipTemplate: 'hook3',
+  clipScene: 0,
+  clipPlaying: false,
+  clipInterval: null,
+  currentScript: '',
+  afPlatform: 'tiktok',
+  analyticsSort: 'earn',
+};
+
+const SEED = [
+  {id:1,name:"คอลลาเจนไตรเปปไทด์ 10000mg",category:"beauty",price:299,originalPrice:590,searchSpike:847,sales24h:3241,rating:4.9,reviews:12840,trendScore:98,salesTrend:"+312%",hashtags:["#คอลลาเจน","#ผิวใส","#ลดริ้วรอย"],shopeeLink:"https://shopee.co.th/product/12345",commission:8.5,badge:"🚀 กำลังระเบิด",keywords:["collagen","ผิวขาว"]},
+  {id:2,name:"ไม้กวาดไฟฟ้า Dyson V12 Clone",category:"home",price:1890,originalPrice:3200,searchSpike:621,sales24h:892,rating:4.7,reviews:5230,trendScore:91,salesTrend:"+198%",hashtags:["#เครื่องดูดฝุ่น","#บ้านสะอาด"],shopeeLink:"https://shopee.co.th/product/23456",commission:6.2,badge:"⚡ Hot Deal",keywords:["เครื่องดูดฝุ่น"]},
+  {id:3,name:"ลิปสติก Velvet Matte 24ชม.",category:"beauty",price:159,originalPrice:299,searchSpike:532,sales24h:6782,rating:4.8,reviews:28990,trendScore:89,salesTrend:"+145%",hashtags:["#ลิปสติก","#เมคอัพ"],shopeeLink:"https://shopee.co.th/product/34567",commission:9.1,badge:"💋 Bestseller",keywords:["ลิปสติก"]},
+  {id:4,name:"AirPods Clone Pro Max 2025",category:"gadget",price:450,originalPrice:890,searchSpike:489,sales24h:1543,rating:4.6,reviews:9870,trendScore:85,salesTrend:"+122%",hashtags:["#หูฟัง","#AirPods"],shopeeLink:"https://shopee.co.th/product/45678",commission:7.3,badge:"🎧 Trending",keywords:["หูฟัง"]},
+  {id:5,name:"เสื้อยืด Oversize Y2K Vintage",category:"fashion",price:199,originalPrice:350,searchSpike:412,sales24h:4320,rating:4.7,reviews:15600,trendScore:82,salesTrend:"+89%",hashtags:["#Oversize","#Y2K"],shopeeLink:"https://shopee.co.th/product/56789",commission:5.8,badge:"👗 Viral",keywords:["เสื้อ"]},
+  {id:6,name:"วิตามิน C 1000mg ฟู้ดเกรด",category:"health",price:189,originalPrice:390,searchSpike:387,sales24h:2109,rating:4.8,reviews:8430,trendScore:79,salesTrend:"+76%",hashtags:["#วิตามินC","#สุขภาพ"],shopeeLink:"https://shopee.co.th/product/67890",commission:8.0,badge:"💊 Rising",keywords:["วิตามิน"]},
+  {id:7,name:"มาม่าแดง Limited Edition 2025",category:"food",price:89,originalPrice:89,searchSpike:934,sales24h:8910,rating:4.9,reviews:42000,trendScore:97,salesTrend:"+421%",hashtags:["#มาม่า","#LimitedEdition"],shopeeLink:"https://shopee.co.th/product/78901",commission:3.5,badge:"🍜 Viral Food",keywords:["มาม่า"]},
+  {id:8,name:"กระเป๋าสะพาย Canvas Tote 2025",category:"fashion",price:349,originalPrice:599,searchSpike:298,sales24h:1876,rating:4.6,reviews:6540,trendScore:73,salesTrend:"+65%",hashtags:["#กระเป๋า","#Canvas"],shopeeLink:"https://shopee.co.th/product/89012",commission:6.0,badge:"👜 Hot",keywords:["กระเป๋า"]},
+];
+
+const TEMPLATES = [
+  {id:'hook3',label:'🎣 Hook 3 วิ',desc:'เปิดแรง ช็อค หยุดนิ้ว',color:'#ff4757',duration:15,scenes:['HOOK ช็อค','สรรพคุณ','ราคา+CTA']},
+  {id:'review',label:'📣 Review Style',desc:'เหมือนรีวิวจริง น่าเชื่อ',color:'#a29bfe',duration:30,scenes:['Unboxing','ทดสอบ','สรุป+ปักตะกร้า']},
+  {id:'compare',label:'⚡ Before/After',desc:'เปรียบเทียบก่อน/หลัง',color:'#2ed573',duration:20,scenes:['ก่อนใช้','ระหว่างใช้','หลังใช้']},
+  {id:'countdown',label:'⏰ Flash Sale',desc:'สร้างความเร่งด่วน',color:'#ffd32a',duration:15,scenes:['ราคาปกติ','ราคาลด!','นับถอยหลัง']},
+];
+
+const VP_SCENES = {
+  hook3:   [{bg:'#0d0d0d',ac:'#ff4757',lines:['⚠️ ห้ามเลื่อนผ่าน!','สินค้านี้ขายหมด','ใน 3 ชั่วโมง 😱'],badge:'TRENDING',showPrice:false},{bg:'#0a0014',ac:'#a29bfe',lines:['✨ สรรพคุณเด็ด','ที่คนแห่ซื้อ','10,000+ ออเดอร์/วัน'],badge:'',showPrice:false},{bg:'#0d1a0a',ac:'#2ed573',lines:['💰 ราคาวันนี้เท่านั้น','ลิงก์ปักตะกร้า','อยู่ใน Bio! 👇'],badge:'',showPrice:true}],
+  review:  [{bg:'#0d0d1a',ac:'#ff6b35',lines:['📦 เพิ่งได้รับของ','มาลองเลย!','#รีวิวจริง'],badge:'UNBOXING',showPrice:false},{bg:'#1a0d0a',ac:'#ffa502',lines:['🔬 ทดสอบจริง','ผลลัพธ์ WOW','ดูกันเลย!'],badge:'',showPrice:false},{bg:'#0a1a0d',ac:'#2ed573',lines:['🌟 สรุป: คุ้มมาก!','ปักตะกร้าก่อน','ของมีจำกัด! 🛒'],badge:'WORTH IT',showPrice:true}],
+  compare: [{bg:'#1a0a0a',ac:'#ff4757',lines:['❌ ก่อนใช้','ปัญหาที่เจอ','ทุกวัน...'],badge:'BEFORE',showPrice:false},{bg:'#0a0a1a',ac:'#a29bfe',lines:['⚡ กำลังใช้','เห็นผลแล้ว!','สังเกตได้เลย'],badge:'',showPrice:false},{bg:'#0a1a0a',ac:'#2ed573',lines:['✅ หลังใช้ WOW!','เห็นผลจริง','ลิงก์ด้านล่าง 👇'],badge:'AFTER ✨',showPrice:true}],
+  countdown:[{bg:'#1a1a0a',ac:'#ffd32a',lines:['💸 ราคาปกติ','แพงมากกก!','คนส่วนใหญ่จ่าย'],badge:'',showPrice:false},{bg:'#1a0a0a',ac:'#ff4757',lines:['🔥 FLASH SALE!','ลดพิเศษวันนี้','เท่านั้น!!'],badge:'SALE NOW',showPrice:true},{bg:'#0a0a1a',ac:'#2ed573',lines:['⏰ เหลือเวลา','อีก 2 ชั่วโมง!','ปักตะกร้าด่วน! 🛒'],badge:'LIMITED',showPrice:false}],
+};
+
+// ════════════════════════════════════════════════
+// AI ENGINE
+// ════════════════════════════════════════════════
+async function callAI(prompt, system='') {
+  const engine = S.engine === 'auto' ? (S.keys.groq ? 'groq' : 'gemini') : S.engine;
+  if (engine === 'groq' && S.keys.groq) return callGroq(prompt, system);
+  if (S.keys.gemini) return callGemini(prompt, system);
+  if (S.keys.groq) return callGroq(prompt, system);
+  // Fallback mock
+  return `[ยังไม่ได้ตั้งค่า API Key]\n\nกรุณาไปที่ ⚙️ ตั้งค่า แล้วใส่ Gemini หรือ Groq API Key (ฟรีทั้งคู่)\n\n📎 Gemini: https://aistudio.google.com/app/apikey\n📎 Groq: https://console.groq.com/keys`;
+}
+
+async function callGemini(prompt, system='') {
+  try {
+    const fullPrompt = system ? `${system}\n\n${prompt}` : prompt;
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${S.keys.gemini}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ contents:[{ parts:[{ text: fullPrompt }] }], generationConfig:{ temperature:0.9, maxOutputTokens:1500 } })
+    });
+    const d = await res.json();
+    if (d.error) return `❌ Gemini Error: ${d.error.message}`;
+    return d.candidates?.[0]?.content?.parts?.[0]?.text || 'เกิดข้อผิดพลาด';
+  } catch(e) { return `❌ Gemini Error: ${e.message}`; }
+}
+
+async function callGroq(prompt, system='') {
+  try {
+    const messages = [];
+    if (system) messages.push({role:'system', content: system});
+    messages.push({role:'user', content: prompt});
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.keys.groq}`},
+      body: JSON.stringify({ model:'llama-3.3-70b-versatile', messages, max_tokens:1500, temperature:0.9 })
+    });
+    const d = await res.json();
+    if (d.error) return `❌ Groq Error: ${d.error.message}`;
+    return d.choices?.[0]?.message?.content || 'เกิดข้อผิดพลาด';
+  } catch(e) { return `❌ Groq Error: ${e.message}`; }
+}
+
+function parseJSON(raw) {
+  try { return JSON.parse(raw.replace(/```json|```/g,'').trim()); } catch { return null; }
+}
+
+// ════════════════════════════════════════════════
+// TTS (Web Speech API)
+// ════════════════════════════════════════════════
+let currentUtterance = null;
+function initTTS() {
+  const sel = document.getElementById('tts-voice');
+  if (!sel) return;
+  const voices = speechSynthesis.getVoices();
+  sel.innerHTML = voices.filter(v=>v.lang.startsWith('th')||v.name.toLowerCase().includes('thai')||v.lang.startsWith('en'))
+    .map(v=>`<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+}
+speechSynthesis.onvoiceschanged = initTTS;
+function ttsSpeak(text) {
+  if (!text) text = document.getElementById('af-caption-text')?.value || '';
+  if (!text) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const voiceName = document.getElementById('tts-voice')?.value;
+  const rate = parseFloat(document.getElementById('tts-rate')?.value || 1);
+  const voices = speechSynthesis.getVoices();
+  if (voiceName) { const v = voices.find(v=>v.name===voiceName); if(v) u.voice = v; }
+  u.rate = rate; u.pitch = 1.1; u.volume = 1;
+  currentUtterance = u;
+  speechSynthesis.speak(u);
+}
+function ttsPause() { speechSynthesis.cancel(); }
+function ttsTest() { ttsSpeak('สวัสดีครับ ทดสอบระบบพากย์เสียงภาษาไทย'); }
+function ttsScript() {
+  const text = document.getElementById('clip-script-display')?.innerText || '';
+  ttsSpeak(text);
+}
+
+// ════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const panel = document.getElementById('panel-'+id);
+  if (panel) panel.classList.add('active');
+  document.querySelector(`[data-tab="${id}"]`)?.classList.add('active');
+  if (id==='analytics') renderAnalytics();
+  if (id==='affiliate') { afUpdate(); initTTS(); }
+  if (id==='clipbuilder') { renderClipBuilder(); initTTS(); }
+  if (id==='setup') renderSetup();
+}
+
+// ════════════════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════════════════
+function renderDashboard() {
+  const logs = genLogs();
+  const earn = logs.reduce((s,l)=>s+l.earn,0);
+  const views = logs.reduce((s,l)=>s+l.views,0);
+  const orders = logs.reduce((s,l)=>s+l.orders,0);
+  document.getElementById('kpi-earn').textContent = '฿'+earn.toLocaleString();
+  document.getElementById('kpi-views').textContent = (views/1000).toFixed(0)+'K';
+  document.getElementById('kpi-orders').textContent = orders;
+  document.getElementById('kpi-products').textContent = S.products.length;
+
+  // Workflow
+  const wfData = [
+    {icon:'🔭',label:'Trend Spy',desc:'วิเคราะห์ keyword',tab:'trendspy',color:'#a29bfe'},
+    {icon:'🔥',label:'Product Hunter',desc:'หาสินค้า trending',tab:'hunter',color:'#ff6b35'},
+    {icon:'🎬',label:'Clip Builder',desc:'ออกแบบ storyboard',tab:'clipbuilder',color:'#ff4757'},
+    {icon:'🛒',label:'Affiliate',desc:'สร้าง link+caption',tab:'affiliate',color:'#2ed573'},
+    {icon:'📊',label:'Analytics',desc:'ติดตามผล',tab:'analytics',color:'#ffd32a'},
+  ];
+  const wfWrap = document.getElementById('wf-wrap');
+  wfWrap.innerHTML = wfData.map((f,i)=>`
+    <div class="wf-step" onclick="showTab('${f.tab}')" style="border-color:${f.color}22">
+      <div class="wf-icon">${f.icon}</div>
+      <div class="wf-name" style="color:${f.color}">${f.label}</div>
+      <div class="wf-desc">${f.desc}</div>
+    </div>
+    ${i<wfData.length-1?'<div class="wf-arrow">›</div>':''}
+  `).join('');
+
+  // Top products
+  const top = [...S.products].sort((a,b)=>b.trendScore-a.trendScore).slice(0,5);
+  document.getElementById('dash-top-products').innerHTML = top.map((p,i)=>`
+    <div onclick="showTab('clipbuilder')" style="display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:5px" onmouseover="this.style.background='#ffffff07'" onmouseout="this.style.background='transparent'">
+      <span style="background:${i===0?'linear-gradient(135deg,#ff6b35,#ff4757)':i===1?'#333':i===2?'#2a2a20':'#1a1a2e'};color:${i<3?'#fff':'#444'};border-radius:5px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0">${i+1}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+        <div style="color:var(--muted);font-size:9px">${p.badge} · ฿${p.price}</div>
+      </div>
+      <div style="color:var(--green);font-size:10px;font-weight:700;flex-shrink:0">${p.salesTrend}</div>
+    </div>
+  `).join('');
+
+  // Best clip
+  const best = [...logs].sort((a,b)=>b.views-a.views)[0];
+  if (best) {
+    document.getElementById('dash-best-clip').innerHTML = `
+      <div style="background:linear-gradient(135deg,#a29bfe15,#6c5ce710);border:1px solid #a29bfe22;border-radius:10px;padding:12px;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px">${best.product.name}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+          <span class="badge badge-purple">${best.platform}</span>
+          <span style="background:#ffffff0a;color:var(--muted);border-radius:4px;padding:2px 7px;font-size:10px">${best.template}</span>
+        </div>
+        ${[['👁 Views',best.views.toLocaleString(),'var(--purple)'],['🛒 Orders',best.orders,'var(--green)'],['💰 รายได้','฿'+best.earn.toLocaleString(),'var(--yellow)'],['CTR',best.ctr+'%','var(--orange)']].map(([l,v,c])=>`
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+            <span style="color:var(--muted);font-size:11px">${l}</span>
+            <span style="color:${c};font-size:11px;font-weight:700">${v}</span>
+          </div>`).join('')}
+      </div>
+      <button class="btn btn-purple" style="width:100%;justify-content:center;font-size:11px" onclick="showTab('clipbuilder')">🔁 ทำคลิปแบบนี้อีก</button>
+    `;
+  }
+
+  // Quick actions
+  const qa = [
+    {icon:'⚡',label:'AI Scan สินค้าใหม่',sub:'ค้นหา trending ด้วย AI',tab:'hunter',color:'#ff6b35'},
+    {icon:'🔭',label:'วิเคราะห์ Keyword',sub:'ก่อนทำคลิป',tab:'trendspy',color:'#a29bfe'},
+    {icon:'🎬',label:'สร้างคลิปใหม่',sub:top[0]?.name||'',tab:'clipbuilder',color:'#ff4757'},
+    {icon:'📊',label:'ดู Analytics',sub:'performance ทั้งหมด',tab:'analytics',color:'#ffd32a'},
+  ];
+  document.getElementById('dash-quick').innerHTML = qa.map(a=>`
+    <button onclick="showTab('${a.tab}')" style="width:100%;margin-bottom:7px;padding:9px 12px;background:${a.color}0d;border:1px solid ${a.color}22;border-radius:9px;text-align:left;cursor:pointer;transition:all .2s;color:inherit;font-family:var(--font)" onmouseover="this.style.background='${a.color}1a'" onmouseout="this.style.background='${a.color}0d'">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:18px">${a.icon}</span>
+        <div style="flex:1;min-width:0">
+          <div style="color:${a.color};font-size:12px;font-weight:700">${a.label}</div>
+          <div style="color:var(--muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.sub}</div>
+        </div>
+        <span style="color:#2a2a50;font-size:16px">›</span>
+      </div>
+    </button>
+  `).join('') + `
+    <div style="background:#ffffff06;border-radius:9px;padding:10px 12px;margin-top:2px">
+      <div style="color:var(--muted);font-size:10px;margin-bottom:3px">🎯 เป้าเดือนนี้</div>
+      <div style="font-size:14px;font-weight:800;color:var(--text)">฿${(earn*2).toLocaleString()}</div>
+      <div style="background:#1a1a2e;border-radius:3px;height:4px;margin-top:6px;overflow:hidden">
+        <div style="width:48%;height:100%;background:linear-gradient(90deg,var(--orange),var(--yellow));border-radius:3px"></div>
+      </div>
+      <div style="color:var(--muted);font-size:9px;margin-top:3px">48% · ฿${earn.toLocaleString()} / ฿${(earn*2).toLocaleString()}</div>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════
+// PRODUCT HUNTER
+// ════════════════════════════════════════════════
+function renderHunterStats() {
+  const prods = S.products;
+  const el = document.getElementById('hunter-stats');
+  const sales = prods.reduce((s,p)=>s+p.sales24h,0);
+  const comm = (prods.reduce((s,p)=>s+p.commission,0)/prods.length).toFixed(1);
+  const spike = Math.max(...prods.map(p=>parseInt(p.salesTrend)||0));
+  el.innerHTML = [
+    ['🔥 Trending',prods.length,'var(--orange)'],
+    ['📦 ยอดขาย 24ชม.',sales.toLocaleString(),'var(--green)'],
+    ['💰 Avg Commission',comm+'%','var(--yellow)'],
+    ['🚀 Spike สูงสุด','+'+spike+'%','var(--red)'],
+  ].map(([l,v,c])=>`<div class="card" style="padding:10px 12px"><div style="color:var(--muted);font-size:9px">${l}</div><div style="color:${c};font-size:15px;font-weight:800">${v}</div></div>`).join('');
+}
+
+function filterProducts() {
+  const q = document.getElementById('hunter-search').value.toLowerCase();
+  const cat = document.getElementById('hunter-cat').value;
+  const sort = document.getElementById('hunter-sort').value;
+  let filtered = S.products
+    .filter(p=>cat==='all'||p.category===cat)
+    .filter(p=>!q||p.name.toLowerCase().includes(q)||(p.keywords||[]).some(k=>k.includes(q)))
+    .sort((a,b)=>b[sort]-a[sort]);
+  renderProductGrid(filtered);
+}
+
+function renderProductGrid(products) {
+  const grid = document.getElementById('product-grid');
+  if (!products.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)"><div style="font-size:40px;margin-bottom:8px">🔍</div><div>ไม่พบสินค้า</div></div>'; return; }
+  grid.innerHTML = products.map((p,i)=>{
+    const hot = p.trendScore>=90;
+    const disc = p.originalPrice>p.price?Math.round((1-p.price/p.originalPrice)*100):0;
+    return `
+    <div class="pcard ${hot?'hot':''}" style="animation:slideUp .35s ease ${i*.05}s both${p.isNew?';border-color:#2ed57333':''}" data-id="${p.id}">
+      ${p.isNew?'<div style="position:absolute;top:7px;left:7px;background:var(--green);color:#000;font-size:9px;font-weight:800;border-radius:4px;padding:2px 6px;z-index:2">✨ AI พบใหม่</div>':''}
+      <div class="pcard-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+          <span class="badge ${hot?'badge-red':'badge-orange'}">${p.badge}</span>
+          <span style="color:var(--green);font-size:11px;font-weight:700">🔥${p.salesTrend}</span>
+        </div>
+        <div class="pcard-name">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px">
+          <span class="pcard-price">฿${p.price.toLocaleString()}</span>
+          ${p.originalPrice>p.price?`<span class="pcard-original">฿${p.originalPrice.toLocaleString()}</span><span class="badge badge-red" style="font-size:9px">-${disc}%</span>`:''}
+        </div>
+        <div class="pcard-stats">
+          <div class="stat-box"><div class="stat-label">📦 ขาย 24ชม.</div><div class="stat-val" style="color:var(--text)">${p.sales24h.toLocaleString()} ชิ้น</div></div>
+          <div class="stat-box"><div class="stat-label">💰 Commission</div><div class="stat-val" style="color:var(--green)">${p.commission}%</div></div>
+          <div class="stat-box"><div class="stat-label">⭐ Rating</div><div class="stat-val" style="color:var(--yellow)">${p.rating}</div></div>
+          <div class="stat-box"><div class="stat-label">🔍 Spike</div><div class="stat-val" style="color:var(--orange)">+${p.searchSpike}%</div></div>
+        </div>
+        <div style="margin-bottom:9px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+            <span style="color:var(--muted);font-size:9px">Trend Score</span>
+            <span style="color:${hot?'var(--red)':'var(--orange)'};font-size:9px;font-weight:700">${p.trendScore}/100</span>
+          </div>
+          <div class="tbar-wrap"><div class="tbar-fill" style="width:${p.trendScore}%;background:linear-gradient(90deg,${hot?'#ff3f3f88,#ff3f3f':'#ff6b3588,#ff6b35'})"></div></div>
+        </div>
+        <div class="pcard-tags">${p.hashtags.map(h=>`<span class="tag">${h}</span>`).join('')}</div>
+        <div class="pcard-actions">
+          <button class="btn btn-primary" onclick="openScriptModal(${p.id})">🎬 Script</button>
+          <button class="btn" style="background:var(--red);color:#fff;flex:1;justify-content:center;font-size:11px" onclick="copyAffLink(${p.id},this)">🛒 Affiliate</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('hunter-sub').textContent = `${products.length} สินค้า Trending`;
+}
+
+async function aiScanProducts() {
+  const btn = document.getElementById('btn-ai-scan');
+  const icon = document.getElementById('scan-icon');
+  btn.disabled = true; icon.style.animation = 'spin 1s linear infinite';
+  try {
+    const existing = S.products.map(p=>p.name).join(', ');
+    const raw = await callAI(
+      `สร้างรายการสินค้า Shopee Thailand trending ปี 2025 จำนวน 4 รายการ ที่แตกต่างจาก: ${existing}
+ตอบ JSON array เท่านั้น ไม่มี markdown ไม่มี backtick:
+[{"id":${Date.now()},"name":"ชื่อ","category":"beauty|fashion|gadget|home|health|food","price":0,"originalPrice":0,"searchSpike":0,"sales24h":0,"rating":4.7,"reviews":0,"trendScore":0,"salesTrend":"+XX%","hashtags":["#tag"],"shopeeLink":"https://shopee.co.th/product/XXXXX","commission":0.0,"badge":"emoji badge","keywords":["kw"],"isNew":true}]`,
+      'Thai Shopee market analyst. Return valid JSON array only. No markdown.'
+    );
+    const arr = parseJSON(raw);
+    if (arr && Array.isArray(arr)) {
+      const stamped = arr.map((p,i)=>({...p,id:Date.now()+i,isNew:true}));
+      S.products = [...stamped, ...S.products];
+      renderHunterStats(); filterProducts(); renderDashboard();
+    }
+  } catch(e) { console.error('aiScan error:', e); }
+  btn.disabled = false; icon.style.animation = '';
+}
+
+function copyAffLink(id, btn) {
+  const p = S.products.find(x=>x.id===id); if(!p) return;
+  const link = `${p.shopeeLink}?af_id=${S.keys.shopee||'myshop_af2025'}&utm_source=tiktok`;
+  navigator.clipboard.writeText(link);
+  const orig = btn.innerHTML; btn.innerHTML = '✅ คัดลอก!'; btn.style.background='var(--green)';
+  setTimeout(()=>{ btn.innerHTML=orig; btn.style.background=''; },2000);
+}
+
+// ════════════════════════════════════════════════
+// SCRIPT MODAL
+// ════════════════════════════════════════════════
+let scriptData = {full:'',hook:'',tags:''};
+let scriptTab = 'full';
+
+async function openScriptModal(id) {
+  const p = S.products.find(x=>x.id===id); if(!p) return;
+  document.getElementById('script-modal-title').textContent = `🎬 AI Script · ${p.name}`;
+  document.getElementById('script-modal-body').innerHTML = '<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">AI กำลังเขียน Script...</div></div>';
+  document.getElementById('script-modal-actions').innerHTML = '';
+  document.getElementById('script-modal').classList.add('open');
+  const raw = await callAI(`สร้าง script คลิปสั้น TikTok ภาษาไทย:
+ชื่อ: ${p.name} | ราคา: ฿${p.price} (ลดจาก ฿${p.originalPrice})
+ขาย 24ชม.: ${p.sales24h.toLocaleString()} ชิ้น | Trend: ${p.salesTrend}
+Hashtags: ${p.hashtags.join(', ')}
+
+สร้าง 4 ส่วน:
+## 🎬 HOOK (3 วินาทีแรก — ช็อคมาก)
+## 📢 เนื้อหาหลัก (จุดเด่น 3 ข้อ)
+## 🛒 CALL TO ACTION (ปักตะกร้า!)
+## #️⃣ HASHTAGS (20 อัน viral)
+
+สไตล์: gen-z วัยรุ่น energetic emoji เยอะ`);
+  S.currentScript = raw;
+  scriptData.full = raw;
+  scriptData.hook = raw.split('## 📢')[0]?.replace(/##.*\n/g,'').trim()||'';
+  scriptData.tags = (raw.match(/#\S+/g)||[]).join(' ');
+  setScriptTab(document.querySelector('.script-stab[data-t="full"]'));
+  document.getElementById('script-modal-actions').innerHTML = `
+    <button class="btn btn-copy btn-sm" id="btn-copy-script" onclick="copyScript()">📋 คัดลอก</button>
+    <button class="btn btn-ghost btn-sm" onclick="ttsSpeak(scriptData[scriptTab])">🔊 ฟัง</button>
+    <button class="btn" style="background:var(--red);color:#fff;font-size:11px;padding:5px 12px;border-radius:7px" onclick="window.open('${p.shopeeLink}?af_id=${S.keys.shopee||'myshop_af2025'}','_blank')">🛒 Shopee</button>
+  `;
+}
+
+function setScriptTab(btn) {
+  document.querySelectorAll('.script-stab').forEach(b=>{ b.className='btn btn-ghost btn-sm script-stab'; });
+  btn.className='btn btn-primary btn-sm script-stab';
+  scriptTab = btn.dataset.t;
+  const text = scriptData[scriptTab] || S.currentScript;
+  document.getElementById('script-modal-body').innerHTML = `<pre class="script-out">${text}</pre>`;
+}
+
+function copyScript() {
+  navigator.clipboard.writeText(scriptData[scriptTab]||S.currentScript);
+  const btn = document.getElementById('btn-copy-script');
+  btn.textContent='✅ คัดลอกแล้ว!'; btn.className='btn btn-copy done btn-sm';
+  setTimeout(()=>{ btn.textContent='📋 คัดลอก'; btn.className='btn btn-copy btn-sm'; },2000);
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ════════════════════════════════════════════════
+// TREND SPY
+// ════════════════════════════════════════════════
+const SPY_QUICK = ['คอลลาเจน','ลิปสติก','หูฟัง bluetooth','เสื้อ oversized','วิตามิน','กระเป๋าผ้า','ครีมกันแดด','นาฬิกา'];
+function renderTrendSpyQuick() {
+  document.getElementById('spy-quick').innerHTML = SPY_QUICK.map(k=>`<span class="related-kw" onclick="document.getElementById('spy-kw').value='${k}';spyAnalyze()">${k}</span>`).join('');
+}
+
+async function spyAnalyze() {
+  const kw = document.getElementById('spy-kw').value.trim(); if(!kw) return;
+  const btn = document.getElementById('btn-spy'); btn.disabled=true; btn.textContent='⏳ AI วิเคราะห์...';
+  document.getElementById('spy-result').innerHTML = '<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">AI กำลังวิเคราะห์ตลาด Shopee...</div></div>';
+  const raw = await callAI(
+    `วิเคราะห์ keyword "${kw}" บน Shopee Thailand ปี 2025
+ตอบ JSON เท่านั้น ไม่มี backtick:
+{"trendScore":0,"searchVolume":"XX,XXX","spike":"+XX%","category":"หมวด","peakTime":"HH:00-HH:00 น.","targetAge":"กลุ่มอายุ","competition":"low|medium|high","relatedKeywords":["kw1","kw2","kw3","kw4","kw5"],"topProducts":[{"name":"ชื่อ","price":"฿XXX","reason":"เหตุผล"},{"name":"ชื่อ","price":"฿XXX","reason":"เหตุผล"},{"name":"ชื่อ","price":"฿XXX","reason":"เหตุผล"}],"contentTips":["tip1","tip2","tip3"],"summary":"สรุป 2 ประโยค"}`,
+    'Shopee Thailand market analyst. JSON only, no markdown, no backticks.'
+  );
+  const d = parseJSON(raw);
+  btn.disabled=false; btn.textContent='🔍 วิเคราะห์';
+  if (!d) { document.getElementById('spy-result').innerHTML=`<div class="card" style="color:var(--red)">❌ วิเคราะห์ไม่ได้ กรุณาลองใหม่<br><small style="color:var(--muted)">${raw.slice(0,200)}</small></div>`; return; }
+  const compColor = {low:'var(--green)',medium:'var(--yellow)',high:'var(--red)'};
+  document.getElementById('spy-result').innerHTML = `
+  <div style="animation:slideUp .4s ease">
+    <div class="card" style="border-color:#ff6b3522;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:10px">
+        <div style="text-align:center">
+          <div class="trend-score-big">${d.trendScore}</div>
+          <div style="color:var(--muted);font-size:10px">Trend Score</div>
+        </div>
+        <div style="flex:1;min-width:180px">
+          <h3 style="font-size:17px;font-weight:800;margin-bottom:4px">"${kw}"</h3>
+          <p style="color:#aaa;font-size:12px;line-height:1.6">${d.summary}</p>
+        </div>
+      </div>
+      <div class="tbar-wrap"><div class="tbar-fill" style="width:${d.trendScore}%;background:linear-gradient(90deg,#ff6b3588,var(--orange))"></div></div>
+    </div>
+    <div class="grid-3" style="margin-bottom:12px">
+      ${[['🔍 Search/เดือน',d.searchVolume,'var(--orange)'],['📈 Spike',d.spike,'var(--green)'],['🏷️ หมวด',d.category,'var(--yellow)'],['🕐 Peak Time',d.peakTime,'var(--purple)'],['👤 กลุ่มเป้า',d.targetAge,'#fd79a8'],['⚔️ Competition',(d.competition||'').toUpperCase(),compColor[d.competition]||'#888']].map(([l,v,c])=>`
+        <div class="card" style="padding:10px 12px">
+          <div style="color:var(--muted);font-size:9px;margin-bottom:2px">${l}</div>
+          <div style="color:${c};font-size:13px;font-weight:700">${v}</div>
+        </div>`).join('')}
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title">🔗 Keyword ที่เกี่ยวข้อง</div>
+      <div>${(d.relatedKeywords||[]).map(k=>`<span class="related-kw" onclick="document.getElementById('spy-kw').value='${k}';spyAnalyze()">${k}</span>`).join('')}</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🏆 สินค้าแนะนำ</div>
+        ${(d.topProducts||[]).map((p,i)=>`
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:${i<2?'9':'0'}px;padding-bottom:${i<2?'9':'0'}px;border-bottom:${i<2?'1px solid var(--border)':'none'}">
+            <span style="background:${['#ffd32a','#888','#cd7f32'][i]||'#333'};color:#000;font-weight:800;border-radius:5px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">${i+1}</span>
+            <div>
+              <div style="font-size:12px;font-weight:600">${p.name}</div>
+              <div style="color:var(--red);font-size:11px;font-weight:700">${p.price}</div>
+              <div style="color:var(--muted);font-size:10px">${p.reason}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title">💡 Content Tips</div>
+        ${(d.contentTips||[]).map(t=>`<div style="display:flex;gap:6px;margin-bottom:7px"><span style="color:var(--orange)">•</span><span style="color:#ccc;font-size:12px;line-height:1.5">${t}</span></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════
+// AFFILIATE
+// ════════════════════════════════════════════════
+function afUpdate() {
+  const sel = document.getElementById('af-product-sel');
+  if (!sel.options.length) {
+    sel.innerHTML = S.products.map(p=>`<option value="${p.id}">${p.badge} ${p.name} · ฿${p.price}</option>`).join('');
+  }
+  const p = S.products.find(x=>x.id===parseInt(sel.value))||S.products[0]; if(!p) return;
+  const earn = Math.round(p.price*p.commission/100);
+  document.getElementById('af-stats').innerHTML = [
+    ['💰 ราคา','฿'+p.price.toLocaleString(),'var(--red)'],
+    ['📈 Trend',p.salesTrend,'var(--green)'],
+    ['⚙️ Comm',p.commission+'%','var(--yellow)'],
+    ['💵 รายได้','~฿'+earn,'var(--orange)'],
+  ].map(([l,v,c])=>`<div class="stat-box"><div class="stat-label">${l}</div><div class="stat-val" style="color:${c}">${v}</div></div>`).join('');
+  document.getElementById('af-earn').textContent = '฿'+earn;
+  updateAfLink(p);
+}
+
+function updateAfLink(p) {
+  const plat = S.afPlatform;
+  const link = `${p.shopeeLink}?af_id=${S.keys.shopee||'myshop_af2025'}&utm_source=${plat}&utm_medium=affiliate`;
+  document.getElementById('af-link-box').textContent = link;
+}
+
+function setPlat(btn) {
+  document.querySelectorAll('.af-plat').forEach(b=>{ b.className='btn btn-ghost btn-sm af-plat'; });
+  btn.className='btn btn-primary btn-sm af-plat active-plat';
+  S.afPlatform = btn.dataset.p;
+  const sel = document.getElementById('af-product-sel');
+  const p = S.products.find(x=>x.id===parseInt(sel.value))||S.products[0];
+  if(p) updateAfLink(p);
+}
+
+function copyAf() {
+  const text = document.getElementById('af-link-box').textContent;
+  navigator.clipboard.writeText(text);
+  const btn = document.getElementById('btn-copy-af');
+  btn.textContent='✅ คัดลอกแล้ว!'; btn.className='btn btn-copy done btn-sm';
+  setTimeout(()=>{ btn.textContent='📋 คัดลอก'; btn.className='btn btn-copy btn-sm'; },2000);
+}
+
+function copyCap() {
+  const text = document.getElementById('af-caption-text').value;
+  navigator.clipboard.writeText(text);
+  const btn = document.getElementById('btn-copy-cap');
+  btn.textContent='✅ คัดลอกแล้ว!'; btn.className='btn btn-copy done btn-sm';
+  setTimeout(()=>{ btn.textContent='📋 คัดลอก Caption'; btn.className='btn btn-copy btn-sm'; },2000);
+}
+
+async function genCaption() {
+  const sel = document.getElementById('af-product-sel');
+  const p = S.products.find(x=>x.id===parseInt(sel.value))||S.products[0]; if(!p) return;
+  const btn = document.getElementById('btn-gen-caption');
+  btn.disabled=true; btn.textContent='⏳ AI เขียน...';
+  document.getElementById('af-caption-empty').style.display='flex';
+  document.getElementById('af-caption-text').style.display='none';
+  document.getElementById('af-caption-actions').style.display='none';
+  const platName = S.afPlatform==='tiktok'?'TikTok':S.afPlatform==='ig'?'Instagram':'Facebook';
+  const style = S.afPlatform==='tiktok'?'gen-z วัยรุ่น สนุก':S.afPlatform==='ig'?'aesthetic มินิมอล สวยงาม':'เป็นกันเอง อบอุ่น';
+  const link = document.getElementById('af-link-box').textContent;
+  const text = await callAI(`เขียน caption ${platName} โปรโมท:
+${p.name} | ฿${p.price} (ลดจาก ฿${p.originalPrice}) | Trend: ${p.salesTrend}
+ขาย ${p.sales24h.toLocaleString()} ชิ้น/24ชม. | Link: ${link}
+
+ต้องการ: hook ดึงดูด + จุดเด่น 3 ข้อ + ราคา + CTA "ปักตะกร้าก่อนของหมด!" + Hashtags 15 อัน
+สไตล์: ${style} emoji เยอะๆ`);
+  document.getElementById('af-caption-empty').style.display='none';
+  document.getElementById('af-caption-text').style.display='block';
+  document.getElementById('af-caption-text').value = text;
+  document.getElementById('af-caption-actions').style.display='flex';
+  btn.disabled=false; btn.textContent='⚡ สร้าง Caption';
+}
+
+// ════════════════════════════════════════════════
+// CLIP BUILDER
+// ════════════════════════════════════════════════
+function renderClipBuilder() {
+  const sel = document.getElementById('clip-product-sel');
+  if (!sel.options.length) sel.innerHTML = S.products.map(p=>`<option value="${p.id}">${p.badge} ${p.name}</option>`).join('');
+  renderTemplates(); clipUpdate();
+}
+
+function renderTemplates() {
+  document.getElementById('clip-templates').innerHTML = TEMPLATES.map(t=>`
+    <button onclick="setClipTemplate('${t.id}')" id="tmpl-${t.id}" style="padding:9px 11px;background:${S.clipTemplate===t.id?t.color+'18':'#ffffff06'};border:1px solid ${S.clipTemplate===t.id?t.color+'44':'var(--border)'};border-radius:8px;text-align:left;cursor:pointer;color:inherit;font-family:var(--font);transition:all .2s;width:100%">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="color:${S.clipTemplate===t.id?t.color:'#ccc'};font-size:12px;font-weight:700">${t.label}</span>
+        <span style="color:var(--muted);font-size:9px">${t.duration}s</span>
+      </div>
+      <div style="color:var(--muted);font-size:10px;margin-top:1px">${t.desc}</div>
+      <div style="display:flex;gap:3px;margin-top:5px">${t.scenes.map(s=>`<span style="background:#ffffff08;color:var(--muted);border-radius:3px;padding:1px 5px;font-size:8px">${s}</span>`).join('')}</div>
+    </button>`).join('');
+}
+
+function setClipTemplate(id) {
+  S.clipTemplate = id; S.clipScene = 0; S.clipPlaying = false;
+  clearInterval(S.clipInterval);
+  renderTemplates(); renderVPreview(); renderStoryboard();
+}
+
+function clipUpdate() {
+  const sel = document.getElementById('clip-product-sel');
+  const p = S.products.find(x=>x.id===parseInt(sel.value))||S.products[0]; if(!p) return;
+  document.getElementById('clip-prod-stats').innerHTML = [
+    ['🔥',p.salesTrend,'var(--green)'],['💰','฿'+p.price,'var(--red)'],['📊',p.trendScore+'pt','var(--orange)'],
+  ].map(([ic,v,c])=>`<div class="stat-box" style="text-align:center"><div style="font-size:12px">${ic}</div><div style="color:${c};font-size:11px;font-weight:700">${v}</div></div>`).join('');
+  renderVPreview(); renderStoryboard();
+}
+
+function getClipProduct() {
+  const sel = document.getElementById('clip-product-sel');
+  return S.products.find(x=>x.id===parseInt(sel.value))||S.products[0];
+}
+
+function renderVPreview() {
+  const p = getClipProduct(); if(!p) return;
+  const tmpl = TEMPLATES.find(t=>t.id===S.clipTemplate)||TEMPLATES[0];
+  const scenes = VP_SCENES[S.clipTemplate]||VP_SCENES.hook3;
+  const sc = scenes[S.clipScene]||scenes[0];
+  const icons = {beauty:'💄',food:'🍜',gadget:'📱',home:'🏠',health:'💊',fashion:'👗'};
+
+  document.getElementById('vp-bg').style = `background:${sc.bg};background-image:radial-gradient(ellipse at 50% 30%,${sc.ac}18,transparent 70%)`;
+  document.getElementById('vp-bars').innerHTML = scenes.map((_,i)=>`<div class="vpbar" style="background:${i<=S.clipScene?sc.ac:'rgba(255,255,255,.15)'}"></div>`).join('');
+
+  const lines = sc.lines.map(l=>l.replace('฿XXX','฿'+p.originalPrice).replace('฿YYY','฿'+p.price));
+  document.getElementById('vp-content').innerHTML = `
+    ${sc.badge?`<div style="position:absolute;top:28px;left:10px;background:${sc.ac};color:#000;font-size:9px;font-weight:900;border-radius:4px;padding:2px 7px">${sc.badge}</div>`:''}
+    <div style="width:100px;height:100px;border-radius:14px;background:linear-gradient(135deg,${sc.ac}33,${sc.ac}11);border:2px solid ${sc.ac}44;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:34px">${icons[p.category]||'🛒'}</div>
+    ${lines.map((l,i)=>`<div style="color:${i===0?sc.ac:i===1?'#fff':'#ccc'};font-family:var(--font);font-weight:${i<2?800:600};font-size:${i===0?14:i===1?12:10}px;text-align:center;text-shadow:0 2px 8px ${sc.ac}44;margin-bottom:2px;line-height:1.4">${l}</div>`).join('')}
+    ${sc.showPrice?`<div style="margin-top:10px;background:${sc.ac}22;border:1px solid ${sc.ac}55;border-radius:8px;padding:5px 14px;text-align:center"><div style="color:${sc.ac};font-weight:900;font-size:18px">฿${p.price.toLocaleString()}</div>${p.originalPrice>p.price?`<div style="color:var(--muted);font-size:9px;text-decoration:line-through">฿${p.originalPrice.toLocaleString()}</div>`:''}</div>`:''}
+  `;
+  document.getElementById('vp-bottom').innerHTML = `
+    <div style="color:#fff;font-size:9px;font-weight:600;margin-bottom:4px;line-height:1.4">${p.hashtags.slice(0,2).join(' ')} #Shopee</div>
+    <div style="display:flex;align-items:center;gap:5px">
+      <div style="width:20px;height:20px;border-radius:50%;background:${sc.ac};display:flex;align-items:center;justify-content:center;font-size:9px">🛒</div>
+      <div style="color:#ccc;font-size:9px">ลิงก์ใน Bio · ปักตะกร้าเลย!</div>
+    </div>
+  `;
+  document.getElementById('vp-scene-label').textContent = `Scene ${S.clipScene+1} / ${scenes.length}`;
+}
+
+function vpTogglePlay() {
+  const tmpl = TEMPLATES.find(t=>t.id===S.clipTemplate)||TEMPLATES[0];
+  const scenes = VP_SCENES[S.clipTemplate];
+  if (S.clipPlaying) {
+    clearInterval(S.clipInterval); S.clipPlaying=false;
+    document.getElementById('btn-vp-play').textContent='▶';
+  } else {
+    S.clipPlaying=true; S.clipScene=0;
+    document.getElementById('btn-vp-play').textContent='⏸';
+    renderVPreview();
+    S.clipInterval = setInterval(()=>{
+      if (S.clipScene>=scenes.length-1) { clearInterval(S.clipInterval); S.clipPlaying=false; document.getElementById('btn-vp-play').textContent='▶'; return; }
+      S.clipScene++; renderVPreview();
+    },2200);
+  }
+}
+function vpPrev() { if(!S.clipPlaying&&S.clipScene>0){ S.clipScene--; renderVPreview(); } }
+function vpNext() { const sc=VP_SCENES[S.clipTemplate]; if(!S.clipPlaying&&S.clipScene<sc.length-1){ S.clipScene++; renderVPreview(); } }
+
+function renderStoryboard() {
+  const scenes = VP_SCENES[S.clipTemplate]||VP_SCENES.hook3;
+  const tmpl = TEMPLATES.find(t=>t.id===S.clipTemplate)||TEMPLATES[0];
+  document.getElementById('storyboard-cards').innerHTML = scenes.map((sc,i)=>`
+    <div onclick="if(!S.clipPlaying){S.clipScene=${i};renderVPreview()}" style="background:${S.clipScene===i?tmpl.color+'15':'#ffffff06'};border:1px solid ${S.clipScene===i?tmpl.color+'44':'var(--border)'};border-radius:10px;padding:9px 11px;cursor:pointer;transition:all .2s">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+        <span style="background:${S.clipScene===i?tmpl.color:'#ffffff15'};color:${S.clipScene===i?'#000':'var(--muted)'};border-radius:4px;padding:1px 7px;font-size:9px;font-weight:700">SCENE ${i+1}</span>
+        <span style="color:${tmpl.color};font-size:9px">${['0s','3s','6s','9s','12s'][i]||''}</span>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:var(--text)">${sc.lines[0]}</div>
+      <div style="font-size:10px;color:var(--muted)">${sc.lines[1]}</div>
+      ${sc.badge?`<span class="badge badge-orange" style="margin-top:4px;font-size:8px">${sc.badge}</span>`:''}
+    </div>`).join('');
+}
+
+async function genAiStoryboard() {
+  const p = getClipProduct(); if(!p) return;
+  const tmpl = TEMPLATES.find(t=>t.id===S.clipTemplate)||TEMPLATES[0];
+  const btn = document.getElementById('btn-ai-story'); btn.disabled=true; btn.textContent='⏳ AI...';
+  document.getElementById('ai-story-result').innerHTML = '<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">AI ออกแบบ Storyboard...</div></div>';
+  const raw = await callAI(`สร้าง storyboard คลิป TikTok ${tmpl.duration} วินาที สไตล์ "${tmpl.label}":
+สินค้า: ${p.name} ฿${p.price} (ลด ${Math.round((1-p.price/p.originalPrice)*100)}%) | Trend: ${p.salesTrend}
+
+ตอบ JSON เท่านั้น ไม่มี backtick:
+{"title":"ชื่อคลิป","hook":"hook 1 ประโยค","scenes":[{"second":"0-3","visual":"ภาพ","text":"ข้อความ","voiceover":"พากย์","transition":"cut|zoom|slide"},{"second":"3-8","visual":"...","text":"...","voiceover":"...","transition":"..."},{"second":"8-${tmpl.duration}","visual":"...","text":"...","voiceover":"...","transition":"..."}],"music":"แนวเพลง","productionTips":["tip1","tip2"]}`,
+    'Thai TikTok creator. JSON only.');
+  const d = parseJSON(raw);
+  btn.disabled=false; btn.textContent='✨ AI Storyboard';
+  if (!d) { document.getElementById('ai-story-result').innerHTML='<div class="card" style="color:var(--red)">❌ ลองใหม่</div>'; return; }
+
+  // Update script display
+  const scriptText = (d.scenes||[]).map(s=>`⏱ ${s.second}s\n🎥 ${s.visual}\n📝 ${s.text}\n🎤 ${s.voiceover}`).join('\n\n');
+  document.getElementById('clip-script-display').innerHTML = `<strong style="color:var(--orange)">${d.title}</strong><br><em style="color:var(--muted);font-size:11px">Hook: ${d.hook}</em><br><br>${scriptText.replace(/\n/g,'<br>')}`;
+
+  document.getElementById('ai-story-result').innerHTML = `
+  <div class="card" style="border-color:${TEMPLATES.find(t=>t.id===S.clipTemplate)?.color||'#ff6b35'}33;max-height:300px;overflow-y:auto">
+    <div style="color:var(--orange);font-size:12px;font-weight:700;margin-bottom:7px">✨ ${d.title}</div>
+    <div style="color:var(--muted);font-size:11px;font-style:italic;margin-bottom:10px">Hook: ${d.hook}</div>
+    ${(d.scenes||[]).map(s=>`
+      <div style="background:#ffffff06;border-radius:7px;padding:8px 10px;margin-bottom:7px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+          <span style="color:var(--orange);font-size:10px;font-weight:700">⏱ ${s.second}</span>
+          <span style="background:#ffffff08;color:var(--muted);padding:1px 5px;border-radius:3px;font-size:8px">${s.transition}</span>
+        </div>
+        <div style="font-size:11px;font-weight:600">${s.text}</div>
+        <div style="color:var(--muted);font-size:10px">🎥 ${s.visual}</div>
+        <div style="color:#555;font-size:10px">🎤 ${s.voiceover}</div>
+      </div>`).join('')}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+      <span style="background:#ffffff08;color:var(--muted);border-radius:5px;padding:3px 8px;font-size:10px">🎵 ${d.music}</span>
+    </div>
+    ${(d.productionTips||[]).map(t=>`<div style="display:flex;gap:5px;margin-top:6px"><span style="color:var(--orange)">💡</span><span style="color:#ccc;font-size:10px">${t}</span></div>`).join('')}
+  </div>`;
+}
+
+async function genExportPack() {
+  const p = getClipProduct(); if(!p) return;
+  const icon = document.getElementById('export-icon'); icon.style.animation='spin 1s linear infinite';
+  document.getElementById('export-pack-result').innerHTML = '<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">AI สร้างแพ็กเกจโพสต์...</div></div>';
+  const link = `${p.shopeeLink}?af_id=${S.keys.shopee||'myshop_af2025'}`;
+  const raw = await callAI(`สร้างแพ็กเกจโพสต์ครบ 3 platform สำหรับ:
+${p.name} | ฿${p.price} | Trend: ${p.salesTrend} | Link: ${link} | Tags: ${p.hashtags.join(' ')}
+
+JSON เท่านั้น ไม่มี backtick:
+{"tiktokCaption":"...","tiktokHashtags":"...","igCaption":"...","igHashtags":"...","fbCaption":"...","scheduleSuggestion":"เวลาที่ดีที่สุด","expectedViews":"ยอดวิวที่คาด","tips":["tip1","tip2"]}`,
+    'Thai social media expert. JSON only.');
+  const d = parseJSON(raw); icon.style.animation='';
+  if (!d) { document.getElementById('export-pack-result').innerHTML='<div class="card" style="color:var(--red)">❌ ลองใหม่</div>'; return; }
+  document.getElementById('export-pack-result').innerHTML = `
+  <div class="card" style="border-color:#2ed57333">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="color:var(--green);font-size:15px;font-weight:800">📦 Export แพ็กเกจโพสต์สำเร็จ!</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="badge badge-green">⏰ ${d.scheduleSuggestion}</span>
+        <span class="badge badge-orange">👁 คาด ${d.expectedViews}</span>
+      </div>
+    </div>
+    <div class="grid-3">
+      ${[['🎵 TikTok',(d.tiktokCaption||'')+'\n\n'+(d.tiktokHashtags||''),'#ff2d55'],['📸 Instagram',(d.igCaption||'')+'\n\n'+(d.igHashtags||''),'#e1306c'],['📘 Facebook',d.fbCaption||'','#1877f2']].map(([title,content,color])=>`
+        <div style="background:#ffffff06;border-radius:10px;padding:11px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="color:${color};font-size:11px;font-weight:700">${title}</span>
+            <button class="btn btn-copy btn-sm" onclick="copyText('${encodeURIComponent(content)}',this)">📋</button>
+          </div>
+          <pre style="color:#ccc;font-family:var(--font);font-size:10px;line-height:1.6;white-space:pre-wrap;max-height:120px;overflow-y:auto">${content}</pre>
+        </div>`).join('')}
+    </div>
+    ${d.tips?`<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">${d.tips.map(t=>`<div style="background:#ffffff07;border-radius:7px;padding:6px 12px;display:flex;gap:5px;align-items:center"><span style="color:var(--yellow)">💡</span><span style="color:#999;font-size:11px">${t}</span></div>`).join('')}</div>`:''}
+  </div>`;
+}
+
+function copyText(encoded, btn) {
+  navigator.clipboard.writeText(decodeURIComponent(encoded));
+  const orig = btn.textContent; btn.textContent='✅'; btn.className='btn btn-copy done btn-sm';
+  setTimeout(()=>{ btn.textContent=orig; btn.className='btn btn-copy btn-sm'; },2000);
+}
+
+// ════════════════════════════════════════════════
+// ANALYTICS
+// ════════════════════════════════════════════════
+// Seeded pseudo-random — stable numbers across re-renders
+function seededRand(seed) { const x = Math.sin(seed+1)*10000; return x - Math.floor(x); }
+function genLogs() {
+  const plats = ['TikTok','Instagram','Facebook'];
+  const tmpls = ['Hook 3วิ','Review Style','Before/After','Flash Sale'];
+  return S.products.slice(0,10).map((p,i)=>{
+    const seed  = p.id * 137 + i * 31;
+    const views  = Math.floor(seededRand(seed)*150000)+8000;
+    const clicks = Math.floor(views*(seededRand(seed+1)*.04+.006));
+    const orders = Math.floor(clicks*(seededRand(seed+2)*.08+.01));
+    const earn   = Math.round(orders*p.price*p.commission/100);
+    const d = new Date(); d.setDate(d.getDate()-i*2);
+    return {id:i+1,product:p,platform:plats[i%3],template:tmpls[i%4],
+      date:d.toLocaleDateString('th-TH'),views,clicks,orders,earn,
+      ctr:((clicks/views)*100).toFixed(2),
+      cvr:(clicks>0?((orders/clicks)*100):0).toFixed(1)};
+  });
+}
+
+function renderAnalytics() {
+  const logs = genLogs();
+  const sorted = [...logs].sort((a,b)=>b[S.analyticsSort]-a[S.analyticsSort]);
+  const tV = logs.reduce((s,l)=>s+l.views,0);
+  const tC = logs.reduce((s,l)=>s+l.clicks,0);
+  const tO = logs.reduce((s,l)=>s+l.orders,0);
+  const tE = logs.reduce((s,l)=>s+l.earn,0);
+  const avgCTR = (logs.reduce((s,l)=>s+parseFloat(l.ctr),0)/logs.length).toFixed(2);
+
+  document.getElementById('analytics-kpi').innerHTML = [
+    ['👁 ยอดวิวรวม',tV.toLocaleString(),'CTR '+avgCTR+'%','var(--purple)'],
+    ['🖱 คลิกทั้งหมด',tC.toLocaleString(),logs.length+' คลิป','var(--orange)'],
+    ['🛒 ออเดอร์รวม',tO.toLocaleString(),'จากทุก platform','var(--green)'],
+    ['💰 รายได้รวม','฿'+tE.toLocaleString(),'~฿'+Math.round(tE/logs.length)+'/คลิป','var(--yellow)'],
+  ].map(([l,v,s,c])=>`
+    <div class="card" style="border-color:${c}22">
+      <div style="color:var(--muted);font-size:10px;margin-bottom:3px">${l}</div>
+      <div style="color:${c};font-size:22px;font-weight:900">${v}</div>
+      <div style="color:var(--muted);font-size:10px;margin-top:3px">${s}</div>
+    </div>`).join('');
+
+  // Platform
+  const plats = ['TikTok','Instagram','Facebook'].map(plat=>{
+    const pl = logs.filter(l=>l.platform===plat);
+    return {name:plat,clips:pl.length,views:pl.reduce((s,l)=>s+l.views,0),earn:pl.reduce((s,l)=>s+l.earn,0),color:plat==='TikTok'?'#ff2d55':plat==='Instagram'?'#e1306c':'#1877f2'};
+  });
+  const maxV = Math.max(...plats.map(p=>p.views));
+  document.getElementById('analytics-platform').innerHTML = `
+    <div class="card-title">📱 Performance แยก Platform</div>
+    ${plats.map(p=>`
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="color:${p.color};font-size:13px;font-weight:700">${p.name}</span>
+          <span style="color:var(--muted);font-size:11px">${p.clips} คลิป · ${p.views.toLocaleString()} views · <span style="color:var(--yellow)">฿${p.earn.toLocaleString()}</span></span>
+        </div>
+        <div class="tbar-wrap"><div class="tbar-fill" style="width:${(p.views/maxV)*100}%;background:linear-gradient(90deg,${p.color}88,${p.color})"></div></div>
+      </div>`).join('')}
+  `;
+
+  // Sort buttons
+  document.getElementById('analytics-sort-btns').innerHTML = [['views','👁 Views'],['clicks','🖱 Clicks'],['orders','🛒 Orders'],['earn','💰 รายได้']].map(([k,l])=>`<button onclick="S.analyticsSort='${k}';renderAnalytics()" class="btn btn-sm" style="background:${S.analyticsSort===k?'#ff6b3522':'#ffffff08'};border:1px solid ${S.analyticsSort===k?'#ff6b3544':'var(--border)'};color:${S.analyticsSort===k?'var(--orange)':'var(--muted)'};padding:4px 9px;font-size:10px">${l}</button>`).join('');
+
+  // Table
+  document.getElementById('analytics-thead').innerHTML = `<tr>${['#','สินค้า','Platform','Template','วันที่','👁 Views','🖱 Clicks','CTR%','🛒','CVR%','💰','Action'].map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  document.getElementById('analytics-tbody').innerHTML = sorted.map((l,i)=>`
+    <tr>
+      <td style="color:var(--muted)">${i+1}</td>
+      <td><div style="font-weight:600;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.product.name}</div><div style="color:var(--muted);font-size:9px">${l.product.badge}</div></td>
+      <td><span style="color:${l.platform==='TikTok'?'#ff2d55':l.platform==='Instagram'?'#e1306c':'#1877f2'};font-weight:700">${l.platform}</span></td>
+      <td style="color:var(--muted)">${l.template}</td>
+      <td style="color:var(--muted)">${l.date}</td>
+      <td style="color:var(--purple);font-weight:700">${l.views.toLocaleString()}</td>
+      <td style="color:var(--orange)">${l.clicks.toLocaleString()}</td>
+      <td><span style="background:${parseFloat(l.ctr)>2?'#2ed57318':'#ffffff08'};color:${parseFloat(l.ctr)>2?'var(--green)':'var(--muted)'};border-radius:4px;padding:2px 6px;font-size:10px">${l.ctr}%</span></td>
+      <td style="color:var(--green);font-weight:700">${l.orders}</td>
+      <td><span style="background:${parseFloat(l.cvr)>3?'#ffd32a18':'#ffffff08'};color:${parseFloat(l.cvr)>3?'var(--yellow)':'var(--muted)'};border-radius:4px;padding:2px 6px;font-size:10px">${l.cvr}%</span></td>
+      <td style="color:var(--yellow);font-weight:800">฿${l.earn.toLocaleString()}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="showTab('clipbuilder')" style="font-size:10px;padding:3px 7px">🔁 ทำซ้ำ</button></td>
+    </tr>`).join('');
+}
+
+async function genInsight() {
+  const logs = genLogs();
+  const btn = document.getElementById('btn-ai-insight'); btn.disabled=true; btn.textContent='⏳ วิเคราะห์...';
+  const body = document.getElementById('analytics-insight-body');
+  body.innerHTML = '<div class="spin-wrap"><div class="spinner"></div><div class="spin-label">AI กำลังวิเคราะห์...</div></div>';
+  const tE = logs.reduce((s,l)=>s+l.earn,0);
+  const tV = logs.reduce((s,l)=>s+l.views,0);
+  const best = [...logs].sort((a,b)=>b.views-a.views)[0];
+  const text = await callAI(`วิเคราะห์ผล affiliate marketing:
+รายได้รวม ฿${tE.toLocaleString()} | ยอดวิวรวม ${tV.toLocaleString()} | ${logs.length} คลิป
+คลิปดีสุด: ${best.product.name} (${best.platform}, ${best.views.toLocaleString()} views)
+สรุป 4 ข้อ: จุดแข็ง | ควรโฟกัสอะไร | ควรปรับปรุงอะไร | เป้าเดือนหน้า
+ภาษาไทย กระชับ ใช้ตัวเลข`);
+  body.innerHTML = `<pre style="color:#ccc;font-family:var(--font);font-size:12px;line-height:1.8;white-space:pre-wrap">${text}</pre>`;
+  btn.disabled=false; btn.textContent='🧠 AI วิเคราะห์';
+}
+
+// ════════════════════════════════════════════════
+// SETUP
+// ════════════════════════════════════════════════
+function loadKeys() {
+  const saved = localStorage.getItem('sth_keys');
+  if (saved) { try { Object.assign(S.keys, JSON.parse(saved)); } catch{} }
+  const e = localStorage.getItem('sth_engine');
+  if (e) S.engine = e;
+  document.getElementById('key-gemini').value = S.keys.gemini;
+  document.getElementById('key-groq').value = S.keys.groq;
+  document.getElementById('key-pexels').value = S.keys.pexels;
+  document.getElementById('key-shopee').value = S.keys.shopee;
+}
+
+function saveKeys() {
+  S.keys.gemini = document.getElementById('key-gemini').value.trim();
+  S.keys.groq = document.getElementById('key-groq').value.trim();
+  S.keys.pexels = document.getElementById('key-pexels').value.trim();
+  S.keys.shopee = document.getElementById('key-shopee').value.trim()||'myshop_af2025';
+  localStorage.setItem('sth_keys', JSON.stringify(S.keys));
+  updateSetupStatus();
+}
+
+function setEngine(btn) {
+  S.engine = btn.dataset.e;
+  localStorage.setItem('sth_engine', S.engine);
+  document.querySelectorAll('.ai-engine-btn').forEach(b=>b.className='btn btn-ghost btn-sm ai-engine-btn');
+  btn.className='btn btn-primary btn-sm ai-engine-btn';
+}
+
+function updateSetupStatus() {
+  const ok = '<div class="setup-status status-ok"></div>';
+  const no = '<div class="setup-status status-no"></div>';
+  document.getElementById('st-gemini').className = 'setup-status '+(S.keys.gemini?'status-ok':'status-no');
+  document.getElementById('st-groq').className = 'setup-status '+(S.keys.groq?'status-ok':'status-no');
+  document.getElementById('st-pexels').className = 'setup-status '+(S.keys.pexels?'status-ok':'status-no');
+  document.getElementById('st-shopee').className = 'setup-status '+(S.keys.shopee?'status-ok':'status-no');
+}
+
+function renderSetup() {
+  updateSetupStatus();
+  document.getElementById('setup-status-list').innerHTML = [
+    [!!(S.keys.gemini||S.keys.groq),'🤖 AI Engine (Gemini/Groq)'],
+    [true,'🎙️ TTS (Web Speech API)'],
+    [!!S.keys.pexels,'🖼️ Pexels (รูปภาพ)'],
+    [!!S.keys.shopee,'🛒 Shopee Affiliate ID'],
+  ].map(([ok,label])=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+      <div style="width:8px;height:8px;border-radius:50%;background:${ok?'var(--green)':'var(--muted)'};box-shadow:${ok?'0 0 6px var(--green)':'none'};flex-shrink:0"></div>
+      <span style="font-size:12px;color:${ok?'var(--text)':'var(--muted)'}">${label}</span>
+      <span style="margin-left:auto;font-size:10px;color:${ok?'var(--green)':'var(--red)'};">${ok?'พร้อมใช้':'ยังไม่ตั้งค่า'}</span>
+    </div>`).join('');
+
+  document.getElementById('setup-guide').innerHTML = [
+    {title:'Gemini API (AI ฟรี 1500 req/วัน)',steps:['ไปที่ aistudio.google.com/app/apikey','ล็อกอิน Google','คลิก "Create API Key"','คัดลอก key มาใส่ด้านบน'],color:'var(--purple)',url:'https://aistudio.google.com/app/apikey'},
+    {title:'Groq API (AI ฟรี เร็วมาก)',steps:['ไปที่ console.groq.com','สมัคร account ฟรี','ไปที่ API Keys → Create','คัดลอก key มาใส่'],color:'var(--orange)',url:'https://console.groq.com/keys'},
+    {title:'Pexels API (รูปภาพ ฟรี)',steps:['ไปที่ pexels.com/api','สมัคร account','Request API Access','คัดลอก key มาใส่'],color:'var(--green)',url:'https://www.pexels.com/api/'},
+  ].map(g=>`
+    <div style="background:#ffffff06;border-radius:9px;padding:11px 13px;border-left:3px solid ${g.color}">
+      <div style="color:${g.color};font-size:12px;font-weight:700;margin-bottom:6px">${g.title}</div>
+      ${g.steps.map((s,i)=>`<div style="color:var(--muted);font-size:11px;margin-bottom:3px">${i+1}. ${s}</div>`).join('')}
+      <a href="${g.url}" target="_blank" class="btn btn-ghost btn-sm" style="margin-top:7px">เปิดเว็บ ↗</a>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+function init() {
+  S.products = SEED.map(p=>({...p}));
+  loadKeys(); renderSetup();
+  renderHunterStats(); filterProducts();
+  renderTrendSpyQuick();
+  renderDashboard();
+  initTTS();
+  setTimeout(initTTS, 1000);
+}
+
+init();
+</script>
+</body>
+</html>
