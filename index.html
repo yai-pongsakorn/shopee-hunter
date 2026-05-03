@@ -321,17 +321,24 @@ pre.script-out{color:#ddd;font-family:var(--font);font-size:13px;line-height:1.8
   </div>
   <!-- TTS Section -->
   <div class="card" style="margin-top:14px" id="af-tts-section">
-    <div class="card-title">🎙️ TTS พากย์เสียง (ฟรี — Web Speech API)</div>
+    <div class="card-title">🎙️ TTS พากย์เสียง (ElevenLabs AI)</div>
     <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
-      <select class="sel" id="tts-voice" style="min-width:180px"></select>
-      <select class="sel" id="tts-rate">
-        <option value="0.8">ช้า</option>
-        <option value="1" selected>ปกติ</option>
-        <option value="1.2">เร็ว</option>
-        <option value="1.5">เร็วมาก</option>
+      <select class="sel" id="tts-voice" style="min-width:180px">
+        <option value="EXAVITQu4vr4xnSDxMaL">Rachel (EN - Female)</option>
+        <option value="pNInz6obpgDQGcFmaJgB">Adam (EN - Male)</option>
+        <option value="jBpfuIE2acCO8z3wKNLl">Freya (EN - Female)</option>
+        <option value="flq6f7yk4E4fJM5XTYuZ">Michael (EN - Male)</option>
+        <option value="custom">— ใส่ Voice ID เอง —</option>
+      </select>
+      <input class="inp" id="tts-custom-voice" placeholder="Voice ID (ถ้าเลือก custom)" style="width:180px;display:none"/>
+      <select class="sel" id="tts-model">
+        <option value="eleven_multilingual_v2">Multilingual v2 (รองรับไทย)</option>
+        <option value="eleven_turbo_v2_5">Turbo v2.5 (เร็ว)</option>
+        <option value="eleven_monolingual_v1">Monolingual v1 (EN)</option>
       </select>
       <button class="btn btn-purple btn-sm" onclick="ttsSpeak()">🔊 ฟัง Caption</button>
-      <button class="btn btn-ghost btn-sm" onclick="ttsPause()">⏸ หยุด</button>
+      <button class="btn btn-ghost btn-sm" id="btn-tts-stop" onclick="ttsStop()" style="display:none">⏹ หยุด</button>
+      <span id="tts-status" style="color:var(--muted);font-size:11px"></span>
     </div>
   </div>
 </div>
@@ -472,14 +479,16 @@ pre.script-out{color:#ddd;font-family:var(--font);font-size:13px;line-height:1.8
     </div>
 
     <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="card">
-        <div class="card-title">🎙️ TTS (Text-to-Speech)</div>
-        <div style="background:#0a0c18;border-radius:9px;padding:12px;border:1px solid #2ed57322">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <div class="setup-status status-ok"></div>
-            <span style="color:var(--green);font-size:12px;font-weight:700">Web Speech API — ฟรี ไม่ต้อง Key!</span>
-          </div>
-          <p style="color:var(--muted);font-size:11px;line-height:1.6">อยู่ในตัว Browser ทุกตัว รองรับเสียงไทย ใช้งานได้ทันทีโดยไม่ต้องสมัครอะไร</p>
+      <div class="card" style="border-color:#fd79a822">
+        <div class="card-title" style="color:#fd79a8">🎙️ ElevenLabs TTS (AI Voice)</div>
+        <div class="setup-row">
+          <div class="setup-status" id="st-elevenlabs"></div>
+          <span class="setup-label">ElevenLabs API Key</span>
+          <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" class="btn btn-ghost btn-sm">สมัครฟรี ↗</a>
+        </div>
+        <input class="inp" id="key-elevenlabs" placeholder="sk_..." oninput="saveKeys()" style="font-family:monospace;font-size:12px;margin-bottom:10px"/>
+        <div style="background:#0a0c18;border-radius:9px;padding:10px 12px;border:1px solid #fd79a822">
+          <p style="color:var(--muted);font-size:11px;line-height:1.6">ElevenLabs ให้ทดลองฟรี 10,000 characters/เดือน รองรับเสียงไทยและหลายภาษา คุณภาพเสียงระดับ AI</p>
           <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="ttsTest()">🔊 ทดสอบเสียง</button>
         </div>
       </div>
@@ -520,7 +529,7 @@ pre.script-out{color:#ddd;font-family:var(--font);font-size:13px;line-height:1.8
 // ════════════════════════════════════════════════
 const S = {
   products: [],
-  keys: { gemini:'', groq:'', pexels:'', shopee:'myshop_af2025' },
+  keys: { gemini:'', groq:'', pexels:'', shopee:'myshop_af2025', elevenlabs:'' },
   engine: 'groq',
   clipTemplate: 'hook3',
   clipScene: 0,
@@ -601,32 +610,116 @@ function parseJSON(raw) {
 }
 
 // ════════════════════════════════════════════════
-// TTS (Web Speech API)
+// TTS (ElevenLabs API)
 // ════════════════════════════════════════════════
-let currentUtterance = null;
+let currentAudio = null;
+
 function initTTS() {
+  // Setup custom voice ID toggle
+  const voiceSel = document.getElementById('tts-voice');
+  const customInp = document.getElementById('tts-custom-voice');
+  if (voiceSel && customInp) {
+    voiceSel.onchange = () => {
+      customInp.style.display = voiceSel.value === 'custom' ? 'inline-block' : 'none';
+    };
+  }
+  updateElevenLabsStatus();
+}
+
+function updateElevenLabsStatus() {
+  const el = document.getElementById('st-elevenlabs');
+  if (el) el.className = 'setup-status ' + (S.keys.elevenlabs ? 'status-ok' : 'status-no');
+}
+
+function getTTSVoiceId() {
   const sel = document.getElementById('tts-voice');
-  if (!sel) return;
-  const voices = speechSynthesis.getVoices();
-  sel.innerHTML = voices.filter(v=>v.lang.startsWith('th')||v.name.toLowerCase().includes('thai')||v.lang.startsWith('en'))
-    .map(v=>`<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+  if (!sel) return 'EXAVITQu4vr4xnSDxMaL';
+  if (sel.value === 'custom') {
+    return document.getElementById('tts-custom-voice')?.value.trim() || 'EXAVITQu4vr4xnSDxMaL';
+  }
+  return sel.value;
 }
-speechSynthesis.onvoiceschanged = initTTS;
-function ttsSpeak(text) {
+
+function getTTSModel() {
+  return document.getElementById('tts-model')?.value || 'eleven_multilingual_v2';
+}
+
+function setTTSStatus(msg, color='var(--muted)') {
+  const el = document.getElementById('tts-status');
+  if (el) { el.textContent = msg; el.style.color = color; }
+}
+
+async function ttsSpeak(text) {
   if (!text) text = document.getElementById('af-caption-text')?.value || '';
-  if (!text) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  const voiceName = document.getElementById('tts-voice')?.value;
-  const rate = parseFloat(document.getElementById('tts-rate')?.value || 1);
-  const voices = speechSynthesis.getVoices();
-  if (voiceName) { const v = voices.find(v=>v.name===voiceName); if(v) u.voice = v; }
-  u.rate = rate; u.pitch = 1.1; u.volume = 1;
-  currentUtterance = u;
-  speechSynthesis.speak(u);
+  if (!text) { setTTSStatus('ไม่มีข้อความ', 'var(--red)'); return; }
+
+  if (!S.keys.elevenlabs) {
+    setTTSStatus('❌ ยังไม่ได้ใส่ ElevenLabs API Key (ไปที่ ⚙️ ตั้งค่า)', 'var(--red)');
+    return;
+  }
+
+  ttsStop();
+  setTTSStatus('⏳ กำลังสร้างเสียง...', 'var(--yellow)');
+  const stopBtn = document.getElementById('btn-tts-stop');
+  if (stopBtn) stopBtn.style.display = 'inline-flex';
+
+  try {
+    const voiceId = getTTSVoiceId();
+    const model = getTTSModel();
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': S.keys.elevenlabs,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: model,
+        voice_settings: { stability: 0.5, similarity_boost: 0.75 }
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.detail?.message || `HTTP ${res.status}`);
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    currentAudio = new Audio(url);
+    currentAudio.onended = () => {
+      setTTSStatus('✅ เล่นจบแล้ว', 'var(--green)');
+      if (stopBtn) stopBtn.style.display = 'none';
+      URL.revokeObjectURL(url);
+    };
+    currentAudio.onerror = () => {
+      setTTSStatus('❌ เล่นไฟล์เสียงไม่ได้', 'var(--red)');
+      if (stopBtn) stopBtn.style.display = 'none';
+    };
+    setTTSStatus('🔊 กำลังเล่น...', 'var(--green)');
+    currentAudio.play();
+  } catch(e) {
+    setTTSStatus(`❌ ${e.message}`, 'var(--red)');
+    if (stopBtn) stopBtn.style.display = 'none';
+  }
 }
-function ttsPause() { speechSynthesis.cancel(); }
-function ttsTest() { ttsSpeak('สวัสดีครับ ทดสอบระบบพากย์เสียงภาษาไทย'); }
+
+function ttsStop() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.src = '';
+    currentAudio = null;
+  }
+  setTTSStatus('', 'var(--muted)');
+  const stopBtn = document.getElementById('btn-tts-stop');
+  if (stopBtn) stopBtn.style.display = 'none';
+}
+
+// ttsPause alias for backward compat
+function ttsPause() { ttsStop(); }
+
+function ttsTest() { ttsSpeak('สวัสดีครับ ทดสอบระบบพากย์เสียง ElevenLabs AI'); }
+
 function ttsScript() {
   const text = document.getElementById('clip-script-display')?.innerText || '';
   ttsSpeak(text);
@@ -1334,6 +1427,7 @@ function loadKeys() {
   document.getElementById('key-groq').value = S.keys.groq;
   document.getElementById('key-pexels').value = S.keys.pexels;
   document.getElementById('key-shopee').value = S.keys.shopee;
+  document.getElementById('key-elevenlabs').value = S.keys.elevenlabs || '';
 }
 
 function saveKeys() {
@@ -1341,6 +1435,7 @@ function saveKeys() {
   S.keys.groq = document.getElementById('key-groq').value.trim();
   S.keys.pexels = document.getElementById('key-pexels').value.trim();
   S.keys.shopee = document.getElementById('key-shopee').value.trim()||'myshop_af2025';
+  S.keys.elevenlabs = document.getElementById('key-elevenlabs').value.trim();
   localStorage.setItem('sth_keys', JSON.stringify(S.keys));
   updateSetupStatus();
 }
@@ -1353,19 +1448,18 @@ function setEngine(btn) {
 }
 
 function updateSetupStatus() {
-  const ok = '<div class="setup-status status-ok"></div>';
-  const no = '<div class="setup-status status-no"></div>';
   document.getElementById('st-gemini').className = 'setup-status '+(S.keys.gemini?'status-ok':'status-no');
   document.getElementById('st-groq').className = 'setup-status '+(S.keys.groq?'status-ok':'status-no');
   document.getElementById('st-pexels').className = 'setup-status '+(S.keys.pexels?'status-ok':'status-no');
   document.getElementById('st-shopee').className = 'setup-status '+(S.keys.shopee?'status-ok':'status-no');
+  document.getElementById('st-elevenlabs').className = 'setup-status '+(S.keys.elevenlabs?'status-ok':'status-no');
 }
 
 function renderSetup() {
   updateSetupStatus();
   document.getElementById('setup-status-list').innerHTML = [
     [!!(S.keys.gemini||S.keys.groq),'🤖 AI Engine (Gemini/Groq)'],
-    [true,'🎙️ TTS (Web Speech API)'],
+    [!!S.keys.elevenlabs,'🎙️ ElevenLabs TTS (AI Voice)'],
     [!!S.keys.pexels,'🖼️ Pexels (รูปภาพ)'],
     [!!S.keys.shopee,'🛒 Shopee Affiliate ID'],
   ].map(([ok,label])=>`
@@ -1378,6 +1472,7 @@ function renderSetup() {
   document.getElementById('setup-guide').innerHTML = [
     {title:'Gemini API (AI ฟรี 1500 req/วัน)',steps:['ไปที่ aistudio.google.com/app/apikey','ล็อกอิน Google','คลิก "Create API Key"','คัดลอก key มาใส่ด้านบน'],color:'var(--purple)',url:'https://aistudio.google.com/app/apikey'},
     {title:'Groq API (AI ฟรี เร็วมาก)',steps:['ไปที่ console.groq.com','สมัคร account ฟรี','ไปที่ API Keys → Create','คัดลอก key มาใส่'],color:'var(--orange)',url:'https://console.groq.com/keys'},
+    {title:'ElevenLabs TTS (เสียง AI คุณภาพสูง)',steps:['ไปที่ elevenlabs.io','สมัคร account (ฟรี 10k chars/เดือน)','ไปที่ Settings → API Keys','คัดลอก key มาใส่ด้านบน'],color:'#fd79a8',url:'https://elevenlabs.io/app/settings/api-keys'},
     {title:'Pexels API (รูปภาพ ฟรี)',steps:['ไปที่ pexels.com/api','สมัคร account','Request API Access','คัดลอก key มาใส่'],color:'var(--green)',url:'https://www.pexels.com/api/'},
   ].map(g=>`
     <div style="background:#ffffff06;border-radius:9px;padding:11px 13px;border-left:3px solid ${g.color}">
